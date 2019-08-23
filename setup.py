@@ -23,12 +23,12 @@ with open('README.rst', 'r') as f:
 dependencies = [
     'mypy>=0.720',
     'typing-extensions',
-    'grpc',
+    'grpcio',
 ]
 
 setup(
     name="grpc-stubs",
-    version="1.22.1",
+    version="1.22.2",
     description='Mypy stubs for gRPC',
     long_description=readme,
     long_description_content_type='text/x-rst',
