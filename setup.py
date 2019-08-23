@@ -28,7 +28,7 @@ dependencies = [
 
 setup(
     name="grpc-stubs",
-    version="1.22.2",
+    version="1.22.3",
     description='Mypy stubs for gRPC',
     long_description=readme,
     long_description_content_type='text/x-rst',

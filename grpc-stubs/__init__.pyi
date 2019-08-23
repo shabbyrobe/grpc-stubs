@@ -70,7 +70,10 @@ OptionKey = Literal[
     "grpc.channel_id",
 ]
 
-Options = typing.Dict[OptionKey, typing.Union[int, float, bool, str, bytes, None]]
+OptionValue = typing.Union[int, float, bool, str, bytes, None]
+OptionKeyValue = typing.Tuple[OptionKey, OptionValue]
+Options = typing.List[OptionKeyValue]
+
 
 class Compression(enum.IntEnum):
     NoCompression = ...
