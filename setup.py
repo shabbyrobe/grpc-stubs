@@ -4,6 +4,8 @@ from typing import List
 
 from setuptools import find_packages
 
+__version__ = "1.23.0"
+
 
 def find_stub_files(name: str) -> List[str]:
     result = []
@@ -28,7 +30,7 @@ dependencies = [
 
 setup(
     name="grpc-stubs",
-    version="1.22.3",
+    version=__version__,
     description='Mypy stubs for gRPC',
     long_description=readme,
     long_description_content_type='text/x-rst',
@@ -39,8 +41,15 @@ setup(
     py_modules=[],
     python_requires='>=3.6',
     install_requires=dependencies,
-    packages=['grpc-stubs', *find_packages(exclude=['scripts'])],
-    package_data={'grpc-stubs': find_stub_files('grpc-stubs')},
+    packages=[
+        'grpc-stubs',
+        'grpc_status-stubs',
+        *find_packages(exclude=['scripts']),
+    ],
+    package_data={
+        'grpc-stubs': find_stub_files('grpc-stubs'),
+        'grpc_status-stubs': find_stub_files('grpc_status-stubs'),
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',

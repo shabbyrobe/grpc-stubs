@@ -6,73 +6,12 @@ from typing_extensions import Literal
 
 __version__: str
 
-OptionKey = Literal[
-    "grpc.census",
-    "grpc.loadreporting",
-    "grpc.minimal_stack",
-    "grpc.max_concurrent_streams",
-    "grpc.max_receive_message_length",
-    "grpc.max_send_message_length",
-    "grpc.max_connection_idle_ms",
-    "grpc.max_connection_age_ms",
-    "grpc.max_connection_age_grace_ms",
-    "grpc.per_message_compression",
-    "grpc.enable_deadline_checking",
-    "grpc.http2.initial_sequence_number",
-    "grpc.http2.lookahead_bytes",
-    "grpc.http2.hpack_table_size.decoder",
-    "grpc.http2.hpack_table_size.encoder",
-    "grpc.http2.max_frame_size",
-    "grpc.http2.bdp_probe",
-    "grpc.http2.min_time_between_pings_ms",
-    "grpc.http2_scheme",
-    "grpc.http2.max_pings_without_data",
-    "grpc.http2.max_ping_strikes",
-    "grpc.http2.write_buffer_size",
-    "grpc.http2.true_binary",
-    "grpc.keepalive_time_ms",
-    "grpc.keepalive_timeout_ms",
-    "grpc.keepalive_permit_without_calls",
-    "grpc.default_authority",
-    "grpc.primary_user_agent",
-    "grpc.secondary_user_agent",
-    "grpc.min_reconnect_backoff_ms",
-    "grpc.max_reconnect_backoff_ms",
-    "grpc.initial_reconnect_backoff_ms",
-    "grpc.server_handshake_timeout_ms",
-    "grpc.ssl_target_name_override",
-    "grpc.ssl_session_cache",
-    "grpc.max_metadata_size",
-    "grpc.so_reuseport",
-    "grpc.resource_quota",
-    "grpc.expand_wildcard_addrs",
-    "grpc.service_config",
-    "grpc.lb_policy_name",
-    "grpc.socket_mutator",
-    "grpc.socket_factory",
-    "grpc.enable_channelz",
-    "grpc.use_cronet_packet_coalescing",
-    "grpc.grpclb_call_timeout_ms",
-    "grpc.grpclb_fallback_timeout_ms",
-    "grpc.xds_fallback_timeout_ms",
-    "grpc.workaround.cronet_compression",
-    "grpc.optimization_target",
-    "grpc.enable_retries",
-    "grpc.per_rpc_retry_buffer_size",
-    "grpc.mobile_log_context",
-    "grpc.enable_http_proxy",
-    "grpc.surface_user_agent",
-    "grpc.inhibit_health_checking",
-    "grpc.dns_enable_srv_queries",
-    "grpc.dns_ares_query_timeout",
-    "grpc.use_local_subchannel_pool",
-    "grpc.channel_pooling_domain",
-    "grpc.channel_id",
-]
 
-OptionValue = typing.Union[int, float, bool, str, bytes, None]
-OptionKeyValue = typing.Tuple[OptionKey, OptionValue]
-Options = typing.List[OptionKeyValue]
+# XXX: Early attempts to tame this used literals for all the keys (gRPC is
+# a bit segfaulty and doesn't adequately validate the option keys), but that
+# didn't quite work out. Maybe it's something we can come back to?
+_OptionKeyValue = typing.Tuple[str, typing.Any]
+_Options = typing.List[_OptionKeyValue]
 
 
 class Compression(enum.IntEnum):
@@ -96,7 +35,7 @@ Metadata = typing.Tuple[
 
 def insecure_channel(
     target: str,
-    options: typing.Optional[Options] = None,
+    options: typing.Optional[_Options] = None,
     compression: typing.Optional[Compression] = None,
 ) -> Channel:
     ...
@@ -105,7 +44,7 @@ def insecure_channel(
 def secure_channel(
     target: str,
     credentials: ChannelCredentials,
-    options: typing.Optional[Options] = None,
+    options: typing.Optional[_Options] = None,
     compression: typing.Optional[Compression] = None,
 ) -> Channel:
     ...
@@ -168,7 +107,7 @@ def server(
     thread_pool: futures.ThreadPoolExecutor,
     handlers: typing.Optional[typing.List[GenericRpcHandler]] = None,
     interceptors: typing.Optional[typing.List[Interceptor]] = None,
-    options: typing.Optional[Options] = None,
+    options: typing.Optional[_Options] = None,
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
 ) -> Server:
