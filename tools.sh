@@ -11,6 +11,10 @@ cmd-test() {
     pushd "$script_abspath/grpc-stubs" > /dev/null
         mypy -- *.pyi
     popd > /dev/null
+
+    # This test setup is based on the instructions here:
+    # https://sobolevn.me/2019/08/testing-mypy-types
+    pytest --mypy-ini-file=setup.cfg
 }
 
 "cmd-$1" "${@:2}"

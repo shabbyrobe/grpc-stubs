@@ -9,3 +9,8 @@ Install using pip::
     pip install grpc-stubs
 
 
+Tests (courtesy of `pytest-mypy-plugins <https://github.com/typeddjango/pytest-mypy-plugins>`_)::
+
+    pip install -r dev-requirements.txt
+    ./tools.sh test
+

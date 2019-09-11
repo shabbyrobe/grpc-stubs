@@ -1,0 +1,16 @@
+- case: grpc_channel_context_manager
+  main: |
+    from grpc import Channel
+    
+    channel = Channel()
+    with channel:
+        pass
+
+  files:
+    - path: myapp.py
+      content: |
+        def first(num: int) -> float:
+            return float(num)
+
+        def second(num: float) -> str:
+            return str(num)
