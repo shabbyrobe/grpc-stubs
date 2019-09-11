@@ -4,7 +4,7 @@ from typing import List
 
 from setuptools import find_packages
 
-__version__ = "1.23.5"
+__version__ = "1.23.6"
 
 
 def find_stub_files(name: str) -> List[str]:
