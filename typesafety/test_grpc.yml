@@ -6,11 +6,12 @@
     with channel:
         pass
 
-  files:
-    - path: myapp.py
-      content: |
-        def first(num: int) -> float:
-            return float(num)
-
-        def second(num: float) -> str:
-            return str(num)
+- case: grpc_status
+  main: |
+    from grpc import Status
+    from grpc_status import to_status
+    
+    # XXX: to_status actually expects a 'google.rpc.status.Status',
+    # but I haven't set up the stubs properly for that yet.
+    status: Status = to_status(None)
+    
