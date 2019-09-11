@@ -14,3 +14,11 @@ Tests (courtesy of `pytest-mypy-plugins <https://github.com/typeddjango/pytest-m
     pip install -r dev-requirements.txt
     ./tools.sh test
 
+
+Other Very Useful Typed Python Stuff
+------------------------------------
+
+- https://github.com/TypedDjango
+- https://github.com/typeddjango/pytest-mypy-plugins
+- https://github.com/typeddjango/awesome-python-stubs
+
