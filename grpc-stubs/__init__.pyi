@@ -2,6 +2,7 @@ import enum
 import threading
 import typing
 from concurrent import futures
+from types import TracebackType
 from typing_extensions import Literal
 
 __version__: str
@@ -294,6 +295,16 @@ class Channel:
         self,
         callback: typing.Callable[[ChannelConnectivity], None],
     ) -> None:
+        ...
+
+    def __enter__(self) -> Channel:
+        ...
+
+    def __exit__(self,
+        exc_type: typing.Optional[typing.Type[BaseException]],
+        exc_val: typing.Optional[BaseException],
+        exc_tb: typing.Optional[TracebackType],
+    ) -> typing.Optional[bool]:
         ...
 
 
