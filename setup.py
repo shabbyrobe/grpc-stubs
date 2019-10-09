@@ -4,7 +4,13 @@ from typing import List
 
 from setuptools import find_packages
 
-__version__ = "1.23.6"
+__version__ = "1.23.7"
+
+dependencies = [
+    'mypy>=0.730',
+    'typing-extensions',
+    'grpcio',
+]
 
 
 def find_stub_files(name: str) -> List[str]:
@@ -22,11 +28,10 @@ def find_stub_files(name: str) -> List[str]:
 with open('README.rst', 'r') as f:
     readme = f.read()
 
-dependencies = [
-    'mypy>=0.720',
-    'typing-extensions',
-    'grpcio',
-]
+package_data = {
+    'grpc-stubs': find_stub_files('grpc-stubs'),
+    'grpc_status-stubs': find_stub_files('grpc_status-stubs'),
+}
 
 setup(
     name="grpc-stubs",
@@ -46,10 +51,7 @@ setup(
         'grpc_status-stubs',
         *find_packages(exclude=['scripts']),
     ],
-    package_data={
-        'grpc-stubs': find_stub_files('grpc-stubs'),
-        'grpc_status-stubs': find_stub_files('grpc_status-stubs'),
-    },
+    package_data=package_data,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
