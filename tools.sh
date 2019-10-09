@@ -7,6 +7,12 @@ cmd-deploy() {
     python3 -m twine upload dist/*
 }
 
+cmd-dev-setup() {
+    python3 -m virtualenv .venv
+    source .venv/bin/activate
+    pip install -r dev-requirements.txt
+}
+
 cmd-test() {
     pushd "$script_abspath/grpc-stubs" > /dev/null
         mypy -- *.pyi

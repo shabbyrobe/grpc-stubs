@@ -1,8 +1,9 @@
-- case: grpc_channel_context_manager
+- case: grpc_basic
   main: |
-    from grpc import Channel
+    from grpc import Channel, Server
     
-    reveal_type(Channel())  # N: Revealed type is 'Channel'
+    reveal_type(Channel())  # N: Revealed type is 'grpc.Channel'
+    reveal_type(Server())   # N: Revealed type is 'grpc.Server'
 
 - case: grpc_status
   main: |
@@ -17,7 +18,7 @@
   main: |
     import grpc
 
-    grpc.insecure_channel("target", ())
-    grpc.insecure_channel("target", (("a", "b"),))
-    grpc.insecure_channel("target", (("a", "b"), ("c", "d")))
+    reveal_type(grpc.insecure_channel("target", ()))  # N: Revealed type is 'grpc.Channel'
+    reveal_type(grpc.insecure_channel("target", (("a", "b"),)))  # N: Revealed type is 'grpc.Channel'
+    reveal_type(grpc.insecure_channel("target", (("a", "b"), ("c", "d"))))  # N: Revealed type is 'grpc.Channel'
     
