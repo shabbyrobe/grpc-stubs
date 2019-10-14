@@ -21,4 +21,11 @@
     reveal_type(grpc.insecure_channel("target", ()))  # N: Revealed type is 'grpc.Channel'
     reveal_type(grpc.insecure_channel("target", (("a", "b"),)))  # N: Revealed type is 'grpc.Channel'
     reveal_type(grpc.insecure_channel("target", (("a", "b"), ("c", "d"))))  # N: Revealed type is 'grpc.Channel'
-    
+
+- case: local_channel_credentials
+  main: |
+    import grpc
+
+    creds = grpc.local_channel_credentials(grpc.LocalConnectionType.LOCAL_TCP)
+    reveal_type(creds)  # N: Revealed type is 'grpc.ChannelCredentials'
+

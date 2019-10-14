@@ -21,6 +21,12 @@ class Compression(enum.IntEnum):
     Gzip = ...
 
 
+@enum.unique
+class LocalConnectionType(enum.Enum):
+    UDS = ...
+    LOCAL_TCP = ...
+ 
+
 # XXX: not documented, needs more investigation.
 # Some evidence:
 # - https://github.com/grpc/grpc/blob/0e1984effd7e977ef18f1ad7fde7d10a2a153e1d/src/python/grpcio_tests/tests/unit/_metadata_test.py#L71
@@ -72,6 +78,12 @@ def ssl_channel_credentials(
     ...
 
 
+def local_channel_credentials(
+    local_connect_type: LocalConnectionType = LocalConnectionType.LOCAL_TCP,
+) -> ChannelCredentials:
+    ...
+
+
 def metadata_call_credentials(
     metadata_plugin: AuthMetadataPlugin,
     name: typing.Optional[str] = None,
@@ -100,7 +112,7 @@ def composite_channel_credentials(
     *rest: CallCredentials,
 ) -> CallCredentials:
     ...
- 
+
 
 """Create Server"""
 
@@ -123,6 +135,12 @@ def ssl_server_credentials(
     private_key_certificate_chain_pairs: typing.List[CertificateChainPair],
     root_certificates: typing.Optional[bytes] = None,
     require_client_auth: bool = False,
+) -> ServerCredentials:
+    ...
+
+
+def local_server_credentials(
+    local_connect_type: LocalConnectionType = LocalConnectionType.LOCAL_TCP,
 ) -> ServerCredentials:
     ...
 
@@ -328,8 +346,14 @@ class Server:
     def start(self) -> None:
         ...
 
-    # Grace period is in seconds
+    # Grace period is in seconds.
+    # XXX: It's not clear from the docs whether grace accepts a float.
     def stop(self, grace: typing.Optional[int] = None) -> threading.Event:
+        ...
+
+    # Block current thread until the server stops. Returns a bool
+    # indicates if the operation times out. Timeout is in seconds.
+    def wait_for_termination(self, timeout: typing.Optional[float] = None) -> bool:
         ...
 
 
