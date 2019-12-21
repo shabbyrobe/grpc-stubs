@@ -14,6 +14,8 @@ cmd-dev-setup() {
 }
 
 cmd-test() {
+    source .venv/bin/activate
+
     pushd "$script_abspath/grpc-stubs" > /dev/null
         mypy -- *.pyi
     popd > /dev/null

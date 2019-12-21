@@ -29,3 +29,11 @@
     creds = grpc.local_channel_credentials(grpc.LocalConnectionType.LOCAL_TCP)
     reveal_type(creds)  # N: Revealed type is 'grpc.ChannelCredentials'
 
+- case: client_call_details_optionals
+  main: |
+    import grpc
+
+    creds = grpc.ClientCallDetails()
+    reveal_type(creds.method)  # N: Revealed type is 'builtins.str'
+    reveal_type(creds.timeout)  # N: Revealed type is 'Union[builtins.float, None]'
+
