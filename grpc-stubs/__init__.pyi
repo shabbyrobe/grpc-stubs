@@ -432,17 +432,14 @@ class Call:
 
 class ClientCallDetails:
     method: str
-    timeout: float
-    metadata: Metadata
-
-    # FIXME: unsure if Optional is appropriate, but 'optional' is present in the docs
+    timeout: typing.Optional[float]
+    metadata: typing.Optional[Metadata]
     credentials: typing.Optional[CallCredentials]
 
-    # FIXME: Unsure from the docs what the precise shape is
     # "This is an EXPERIMENTAL argument. An optional flag t enable wait for ready mechanism."
-    wait_for_ready: bool
+    wait_for_ready: typing.Optional[bool]
 
-    compression: Compression
+    compression: typing.Optional[Compression]
 
 
 TRequest = typing.TypeVar("TRequest")
