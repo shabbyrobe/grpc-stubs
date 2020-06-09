@@ -30,6 +30,8 @@ with open('README.rst', 'r') as f:
 
 package_data = {
     'grpc-stubs': find_stub_files('grpc-stubs'),
+    'grpc_health-stubs': find_stub_files('grpc_health-stubs'),
+    'grpc_reflection-stubs': find_stub_files('grpc_reflection-stubs'),
     'grpc_status-stubs': find_stub_files('grpc_status-stubs'),
 }
 
@@ -48,6 +50,8 @@ setup(
     install_requires=dependencies,
     packages=[
         'grpc-stubs',
+        'grpc_health-stubs',
+        'grpc_reflection-stubs',
         'grpc_status-stubs',
         *find_packages(exclude=['scripts']),
     ],
@@ -56,6 +60,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8'
     ]
 )
