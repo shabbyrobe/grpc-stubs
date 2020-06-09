@@ -2,7 +2,7 @@ from concurrent import futures
 from grpc import ServicerContext
 from grpc_health.v1 import health_pb2 as _health_pb2
 from grpc_health.v1 import health_pb2_grpc as _health_pb2_grpc
-from typing import Any, Callable, Optional
+from typing import Callable, Optional
 
 SERVICE_NAME: str
 OVERALL_HEALTH: str
