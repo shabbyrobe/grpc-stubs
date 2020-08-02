@@ -1,5 +1,0 @@
-black
-pytest-mypy-plugins==1.0.3
-twine
-wheel
--e .

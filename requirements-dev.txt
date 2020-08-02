@@ -1,0 +1,5 @@
+black
+pytest-mypy-plugins==1.4.0
+twine
+wheel
+-e .
