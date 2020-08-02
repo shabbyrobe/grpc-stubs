@@ -11,7 +11,7 @@ cmd-deploy() {
 cmd-dev-setup() {
     python3 -m venv venv
     source venv/bin/activate
-    pip install -r dev-requirements.txt
+    pip install -r requirements-dev.txt
 }
 
 cmd-test() {
