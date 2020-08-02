@@ -347,8 +347,7 @@ class Server:
         ...
 
     # Grace period is in seconds.
-    # XXX: It's not clear from the docs whether grace accepts a float.
-    def stop(self, grace: typing.Optional[int] = None) -> threading.Event:
+    def stop(self, grace: typing.Optional[float] = None) -> threading.Event:
         ...
 
     # Block current thread until the server stops. Returns a bool
