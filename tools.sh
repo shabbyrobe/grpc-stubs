@@ -2,6 +2,8 @@
 set -o errexit -o nounset -o pipefail
 script_abspath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Don't forget to update the version in setup.py, commit, tag and
+# push tags.
 cmd-deploy() {
     source venv/bin/activate
     python3 setup.py sdist bdist_wheel
