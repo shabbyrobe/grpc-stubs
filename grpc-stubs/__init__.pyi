@@ -12,7 +12,7 @@ __version__: str
 # a bit segfaulty and doesn't adequately validate the option keys), but that
 # didn't quite work out. Maybe it's something we can come back to?
 _OptionKeyValue = typing.Tuple[str, typing.Any]
-_Options = typing.Tuple[_OptionKeyValue, ...]
+_Options = typing.Sequence[_OptionKeyValue]
 
 
 class Compression(enum.IntEnum):
