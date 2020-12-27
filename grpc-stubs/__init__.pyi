@@ -448,9 +448,9 @@ TRequest = typing.TypeVar("TRequest")
 TResponse = typing.TypeVar("TResponse")
 
 # An object that is both a Call for the RPC and a Future. In the event of
-# RPC completion, the return Call-Future’s result value will be the
+# RPC completion, the return Call-Future's result value will be the
 # response message of the RPC. Should the event terminate with non-OK
-# status, the returned Call-Future’s exception value will be an RpcError.
+# status, the returned Call-Future's exception value will be an RpcError.
 #
 class CallFuture(typing.Generic[TResponse], Call, Future[TResponse]):
     pass
@@ -463,16 +463,16 @@ class UnaryUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
         # FIXME: decode these cryptic runes to confirm the typing mystery of
         # this callable's signature that was left for us by past civilisations:
         #
-        #     continuation – A function that proceeds with the invocation by
+        #     continuation - A function that proceeds with the invocation by
         #     executing the next interceptor in chain or invoking the actual RPC
-        #     on the underlying Channel. It is the interceptor’s responsibility
+        #     on the underlying Channel. It is the interceptor's responsibility
         #     to call it if it decides to move the RPC forward. The interceptor
         #     can use response_future = continuation(client_call_details,
         #     request) to continue with the RPC. continuation returns an object
         #     that is both a Call for the RPC and a Future. In the event of RPC
-        #     completion, the return Call-Future’s result value will be the
+        #     completion, the return Call-Future's result value will be the
         #     response message of the RPC. Should the event terminate with non-OK
-        #     status, the returned Call-Future’s exception value will be an
+        #     status, the returned Call-Future's exception value will be an
         #     RpcError.
         #
         continuation: typing.Callable[[ClientCallDetails, TRequest], CallFuture[TResponse]],
