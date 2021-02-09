@@ -613,7 +613,7 @@ class UnaryUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def future(
         self,
         request: TRequest,
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -627,7 +627,7 @@ class UnaryUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def with_call(
         self,
         request: TRequest,
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -646,7 +646,7 @@ class UnaryStreamMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request: TRequest,
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -663,7 +663,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request_iterator: typing.Iterable[TRequest],
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -677,7 +677,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def future(
         self,
         request_iterator: typing.Iterable[TRequest],
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -691,7 +691,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def with_call(
         self,
         request_iterator: typing.Iterable[TRequest],
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
@@ -710,7 +710,7 @@ class StreamStreamMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request_iterator: typing.Iterable[TRequest],
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
