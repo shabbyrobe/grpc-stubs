@@ -4,7 +4,7 @@ from typing import List
 
 from setuptools import find_packages
 
-__version__ = "1.24.4"
+__version__ = "1.24.5"
 
 dependencies = [
     'mypy>=0.730',
