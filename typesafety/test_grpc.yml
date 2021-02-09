@@ -53,3 +53,13 @@
     reveal_type(ctx.abort(grpc.StatusCode.OK, "msg"))  # N: Revealed type is '<nothing>'
     reveal_type(ctx.abort_with_status(grpc.Status()))  # N: Revealed type is '<nothing>'
 
+- case: call_iterator_pr10
+  main: |
+    import grpc
+    import typing as t
+
+    call_iter: grpc.CallIterator[str] = t.cast(t.Any, None)
+    for call in call_iter:
+      pass
+    reveal_type(call)  # N: Revealed type is 'builtins.str*'
+  
