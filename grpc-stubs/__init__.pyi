@@ -483,7 +483,7 @@ class UnaryUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
 
 
 class CallIterator(typing.Generic[TResponse], Call):
-    def __iter__(self) -> typing.Iterable[TResponse]: ...
+    def __iter__(self) -> typing.Iterator[TResponse]: ...
 
 
 class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
