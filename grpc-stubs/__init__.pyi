@@ -110,7 +110,7 @@ def composite_channel_credentials(
     channel_credentials: ChannelCredentials,
     call_credentials: CallCredentials,
     *rest: CallCredentials,
-) -> CallCredentials:
+) -> ChannelCredentials:
     ...
 
 
