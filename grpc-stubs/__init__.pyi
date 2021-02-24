@@ -410,14 +410,14 @@ class RpcError(Exception):
 
 class RpcContext:
     def add_callback(self, callback: typing.Callable[[], None]) -> bool: ...
-    def cancel(self) -> None: ...
+    def cancel(self): ...
     def is_active(self) -> bool: ...
     def time_remaining(self) -> float: ...
 
 
 """Client-Side Context"""
 
-class Call:
+class Call(RpcContext):
     def code(self) -> StatusCode: ...
 
     # misnamed property, does not align with status.proto, where it is called 'message':
@@ -518,7 +518,7 @@ class StreamStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
 
 """Service-Side Context"""
 
-class ServicerContext:
+class ServicerContext(RpcContext):
 
     # misnamed parameter 'details', does not align with status.proto, where it is called 'message':
     def abort(self, code: StatusCode, details: str) -> typing.NoReturn: ...
