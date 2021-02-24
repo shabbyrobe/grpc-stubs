@@ -27,6 +27,7 @@ from typing import (
     Callable,
     Optional,
     Sequence,
+    NamedTuple,
     Union
 )
 
@@ -40,12 +41,16 @@ class ServerInterceptor(metaclass=ABCMeta):
     ) -> grpc.RpcMethodHandler: ...
 
 
-class ClientCallDetails(grpc.ClientCallDetails):
+class _ClientCallDetails(NamedTuple):
     method: str
     timeout: Optional[float]
     metadata: Optional[Metadata]
     credentials: Optional[grpc.CallCredentials]
     wait_for_ready: Optional[bool]
+
+
+class ClientCallDetails(_ClientCallDetails, grpc.ClientCallDetails):
+    pass
 
 
 class ClientInterceptor(metaclass=ABCMeta): ...

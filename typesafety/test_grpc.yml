@@ -62,4 +62,32 @@
     for call in call_iter:
       pass
     reveal_type(call)  # N: Revealed type is 'builtins.str*'
+
+- case: aio_pr_13
+  main: |
+    from grpc import aio
+    class ExampleInterceptor(aio.UnaryUnaryClientInterceptor):
+        def __init__(self):
+            self._metadata = ("example_header", "example_value")
+
+        def _add_metadata(self, call_details):
+            if call_details.metadata is not None:
+                new_metadata = list(call_details.metadata)
+            else:
+                new_metadata = []
+            
+            new_metadata.append(self._metadata)
+            return aio.ClientCallDetails(
+                call_details.method,
+                call_details.timeout,
+                new_metadata,
+                call_details.credentials,
+                call_details.wait_for_ready
+            )
+
+        async def intercept_unary_unary(self, continuation, client_call_details, request):
+            new_details = self._add_metadata(client_call_details)
+            return await continuation(new_details, request)
+
+    channel = aio.insecure_channel("localhost:50051", interceptors=[ExampleInterceptor()])
   
