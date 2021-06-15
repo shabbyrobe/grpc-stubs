@@ -11,7 +11,7 @@ Install using pip::
 
 Tests (courtesy of `pytest-mypy-plugins <https://github.com/typeddjango/pytest-mypy-plugins>`_)::
 
-    pip install -r dev-requirements.txt
+    pip install -r requirements-dev.txt
     ./tools.sh test
 
 

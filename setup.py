@@ -8,7 +8,7 @@ __version__ = "1.24.6"
 
 dependencies = [
     'mypy>=0.730',
-    'typing-extensions',
+    "typing-extensions; python_version<'3.8'",
     'grpcio',
 ]
 
