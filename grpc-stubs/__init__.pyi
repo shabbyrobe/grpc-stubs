@@ -3,7 +3,7 @@ import threading
 import typing
 from concurrent import futures
 from types import TracebackType
-from typing_extensions import Literal
+from typing_extensions import Awaitable, Literal
 
 __version__: str
 
@@ -449,7 +449,7 @@ TResponse = typing.TypeVar("TResponse")
 # response message of the RPC. Should the event terminate with non-OK
 # status, the returned Call-Future’s exception value will be an RpcError.
 #
-class CallFuture(typing.Generic[TResponse], Call, Future[TResponse]):
+class CallFuture(typing.Generic[TResponse], Call, Future[TResponse], Awaitable[TResponse]):
     pass
 
 
