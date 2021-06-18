@@ -7,8 +7,8 @@ from setuptools import find_packages
 __version__ = "1.24.6"
 
 dependencies = [
-    'mypy>=0.730',
-    'typing-extensions',
+    'mypy>=0.902',
+    "typing-extensions; python_version<'3.8'",
     'grpcio',
 ]
 
