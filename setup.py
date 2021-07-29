@@ -1,8 +1,8 @@
 import os
-from distutils.core import setup
 from typing import List
 
 from setuptools import find_packages
+from distutils.core import setup
 
 __version__ = "1.24.7"
 
