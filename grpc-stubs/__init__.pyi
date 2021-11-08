@@ -30,7 +30,7 @@ class Compression(enum.IntEnum):
 class LocalConnectionType(enum.Enum):
     UDS = ...
     LOCAL_TCP = ...
- 
+
 
 # XXX: not documented, needs more investigation.
 # Some evidence:
@@ -131,7 +131,7 @@ def composite_channel_credentials(
 def server(
     thread_pool: futures.ThreadPoolExecutor,
     handlers: typing.Optional[typing.List[GenericRpcHandler]] = None,
-    interceptors: typing.Optional[typing.List[Interceptor]] = None,
+    interceptors: typing.Optional[typing.List[ServerInterceptor]] = None,
     options: typing.Optional[_Options] = None,
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
@@ -602,7 +602,7 @@ class ServerInterceptor(typing.Generic[TRequest, TResponse]):
     def intercept_service(
         self,
         continuation: typing.Callable[
-            [HandlerCallDetails], 
+            [HandlerCallDetails],
             typing.Optional[RpcMethodHandler[TRequest, TResponse]]
         ],
         handler_call_details: HandlerCallDetails,
