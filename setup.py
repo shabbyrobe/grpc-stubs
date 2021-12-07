@@ -1,14 +1,14 @@
 import os
-from distutils.core import setup
 from typing import List
 
 from setuptools import find_packages
+from distutils.core import setup
 
-__version__ = "1.24.5"
+__version__ = "1.24.7"
 
 dependencies = [
-    'mypy>=0.730',
-    'typing-extensions',
+    'mypy>=0.902',
+    "typing-extensions; python_version<'3.8'",
     'grpcio',
 ]
 
@@ -17,7 +17,7 @@ def find_stub_files(name: str) -> List[str]:
     result = []
     for root, dirs, files in os.walk(name):
         for file in files:
-            if file.endswith('.pyi'):
+            if file.endswith('.pyi') or file == 'py.typed':
                 if os.path.sep in root:
                     sub_root = root.split(os.path.sep, 1)[-1]
                     file = os.path.join(sub_root, file)

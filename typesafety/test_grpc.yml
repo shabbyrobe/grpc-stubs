@@ -1,26 +1,26 @@
 - case: grpc_basic
   main: |
     from grpc import Channel, Server
-    
-    reveal_type(Channel())  # N: Revealed type is 'grpc.Channel'
-    reveal_type(Server())   # N: Revealed type is 'grpc.Server'
+
+    reveal_type(Channel())  # N: Revealed type is "grpc.Channel"
+    reveal_type(Server())   # N: Revealed type is "grpc.Server"
 
 - case: grpc_status
   main: |
     from grpc import Status
     from grpc_status import to_status
-    
-    # XXX: to_status actually expects a 'google.rpc.status.Status',
+
+    # XXX: to_status actually expects a "google.rpc.status.Status",
     # but I haven't set up the stubs properly for that yet.
     status: Status = to_status(None)
-    
+
 - case: grpc_channel_options
   main: |
     import grpc
 
-    reveal_type(grpc.insecure_channel("target", ()))  # N: Revealed type is 'grpc.Channel'
-    reveal_type(grpc.insecure_channel("target", (("a", "b"),)))  # N: Revealed type is 'grpc.Channel'
-    reveal_type(grpc.insecure_channel("target", (("a", "b"), ("c", "d"))))  # N: Revealed type is 'grpc.Channel'
+    reveal_type(grpc.insecure_channel("target", ()))  # N: Revealed type is "grpc.Channel"
+    reveal_type(grpc.insecure_channel("target", (("a", "b"),)))  # N: Revealed type is "grpc.Channel"
+    reveal_type(grpc.insecure_channel("target", (("a", "b"), ("c", "d"))))  # N: Revealed type is "grpc.Channel"
 
 - case: grpc_channel_options_supports_list
   main: |
@@ -35,23 +35,23 @@
     import grpc
 
     creds = grpc.local_channel_credentials(grpc.LocalConnectionType.LOCAL_TCP)
-    reveal_type(creds)  # N: Revealed type is 'grpc.ChannelCredentials'
+    reveal_type(creds)  # N: Revealed type is "grpc.ChannelCredentials"
 
 - case: client_call_details_optionals
   main: |
     import grpc
 
     creds = grpc.ClientCallDetails()
-    reveal_type(creds.method)  # N: Revealed type is 'builtins.str'
-    reveal_type(creds.timeout)  # N: Revealed type is 'Union[builtins.float, None]'
+    reveal_type(creds.method)  # N: Revealed type is "builtins.str"
+    reveal_type(creds.timeout)  # N: Revealed type is "Union[builtins.float, None]"
 
 - case: service_context_abort
   main: |
     import grpc
 
     ctx = grpc.ServicerContext()
-    reveal_type(ctx.abort(grpc.StatusCode.OK, "msg"))  # N: Revealed type is '<nothing>'
-    reveal_type(ctx.abort_with_status(grpc.Status()))  # N: Revealed type is '<nothing>'
+    reveal_type(ctx.abort(grpc.StatusCode.OK, "msg"))  # N: Revealed type is "<nothing>"
+    reveal_type(ctx.abort_with_status(grpc.Status()))  # N: Revealed type is "<nothing>"
 
 - case: call_iterator_pr10
   main: |
@@ -90,4 +90,28 @@
             return await continuation(new_details, request)
 
     channel = aio.insecure_channel("localhost:50051", interceptors=[ExampleInterceptor()])
-  
+
+    reveal_type(call)  # N: Revealed type is "builtins.str*"
+
+- case: alts_credentials
+  main: |
+    import grpc
+
+    reveal_type(grpc.alts_channel_credentials())  # N: Revealed type is "grpc.ChannelCredentials"
+    reveal_type(grpc.alts_server_credentials())  # N: Revealed type is "grpc.ServerCredentials"
+    reveal_type(grpc.compute_engine_channel_credentials())  # N: Revealed type is "grpc.ChannelCredentials"
+
+- case: insecure_credentials
+  main: |
+    import grpc
+
+    reveal_type(grpc.insecure_server_credentials())  # N: Revealed type is "grpc.ServerCredentials"
+
+- case: xds_credentials
+  main: |
+    import grpc
+
+    creds = grpc.xds_channel_credentials(grpc.local_channel_credentials(grpc.LocalConnectionType.LOCAL_TCP))
+    reveal_type(creds)  # N: Revealed type is "grpc.ChannelCredentials"
+    screds = grpc.xds_server_credentials(grpc.insecure_server_credentials())
+    reveal_type(screds)  # N: Revealed type is "grpc.ServerCredentials"

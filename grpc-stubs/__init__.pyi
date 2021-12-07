@@ -1,9 +1,14 @@
 import enum
 import threading
 import typing
+import sys
 from concurrent import futures
 from types import TracebackType
-from typing_extensions import Literal
+if sys.version_info[:2] >= (3, 8):
+    from typing import Literal
+else:
+    # Python 3.7 and earlier
+    from typing_extensions import Literal
 
 __version__: str
 
@@ -25,7 +30,7 @@ class Compression(enum.IntEnum):
 class LocalConnectionType(enum.Enum):
     UDS = ...
     LOCAL_TCP = ...
- 
+
 
 # XXX: not documented, needs more investigation.
 # Some evidence:
@@ -94,6 +99,13 @@ def metadata_call_credentials(
 def access_token_call_credentials(access_token: str) -> CallCredentials:
     ...
 
+def alts_channel_credentials(
+    service_accounts: typing.Sequence[str] = None,
+) -> ChannelCredentials: ...
+def compute_engine_channel_credentials() -> ChannelCredentials: ...
+def xds_channel_credentials(
+    fallback_credentials: ChannelCredentials = None,
+) -> ChannelCredentials: ...
 
 # GRPC docs say there should be at least two:
 def composite_call_credentials(
@@ -119,7 +131,7 @@ def composite_channel_credentials(
 def server(
     thread_pool: futures.ThreadPoolExecutor,
     handlers: typing.Optional[typing.List[GenericRpcHandler]] = None,
-    interceptors: typing.Optional[typing.List[Interceptor]] = None,
+    interceptors: typing.Optional[typing.List[ServerInterceptor]] = None,
     options: typing.Optional[_Options] = None,
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
@@ -159,6 +171,11 @@ def dynamic_ssl_server_credentials(
 ) -> ServerCredentials:
     ...
 
+def alts_server_credentials() -> ServerCredentials: ...
+def insecure_server_credentials() -> ServerCredentials: ...
+def xds_server_credentials(
+    fallback_credentials: ServerCredentials,
+) -> ServerCredentials: ...
 
 """RPC Method Handlers"""
 
@@ -501,7 +518,7 @@ class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
         self,
         continuation: typing.Callable[[ClientCallDetails, TRequest], CallFuture[TResponse]],
         client_call_details: ClientCallDetails,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
     ) -> CallFuture[TResponse]:
         ...
 
@@ -511,7 +528,7 @@ class StreamStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
         self,
         continuation: typing.Callable[[ClientCallDetails, TRequest], CallIterator[TResponse]],
         client_call_details: ClientCallDetails,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
     ) -> CallIterator[TResponse]:
         ...
 
@@ -559,11 +576,11 @@ class RpcMethodHandler(typing.Generic[TRequest, TResponse]):
 
     unary_unary: typing.Optional[typing.Callable[[TRequest, ServicerContext], TResponse]]
 
-    unary_stream: typing.Optional[typing.Callable[[TRequest, ServicerContext], typing.Iterable[TResponse]]]
+    unary_stream: typing.Optional[typing.Callable[[TRequest, ServicerContext], typing.Iterator[TResponse]]]
 
-    stream_unary: typing.Optional[typing.Callable[[typing.Iterable[TRequest], ServicerContext], TResponse]]
+    stream_unary: typing.Optional[typing.Callable[[typing.Iterator[TRequest], ServicerContext], TResponse]]
 
-    stream_stream: typing.Optional[typing.Callable[[typing.Iterable[TRequest], ServicerContext], typing.Iterable[TResponse]]]
+    stream_stream: typing.Optional[typing.Callable[[typing.Iterator[TRequest], ServicerContext], typing.Iterator[TResponse]]]
 
 
 class HandlerCallDetails:
@@ -585,7 +602,7 @@ class ServerInterceptor(typing.Generic[TRequest, TResponse]):
     def intercept_service(
         self,
         continuation: typing.Callable[
-            [HandlerCallDetails], 
+            [HandlerCallDetails],
             typing.Optional[RpcMethodHandler[TRequest, TResponse]]
         ],
         handler_call_details: HandlerCallDetails,
@@ -662,7 +679,7 @@ class UnaryStreamMultiCallable(typing.Generic[TRequest, TResponse]):
 class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
         timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
@@ -676,7 +693,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
 
     def future(
         self,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
         timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
@@ -690,7 +707,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
 
     def with_call(
         self,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
         timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
@@ -709,7 +726,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
 class StreamStreamMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
-        request_iterator: typing.Iterable[TRequest],
+        request_iterator: typing.Iterator[TRequest],
         timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
