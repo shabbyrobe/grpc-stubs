@@ -61,7 +61,7 @@
     call_iter: grpc.CallIterator[str] = t.cast(t.Any, None)
     for call in call_iter:
       pass
-    reveal_type(call)  # N: Revealed type is 'builtins.str*'
+    reveal_type(call)  # N: Revealed type is "builtins.str*"
 
 - case: aio_pr_13
   main: |
@@ -90,8 +90,6 @@
             return await continuation(new_details, request)
 
     channel = aio.insecure_channel("localhost:50051", interceptors=[ExampleInterceptor()])
-
-    reveal_type(call)  # N: Revealed type is "builtins.str*"
 
 - case: alts_credentials
   main: |
