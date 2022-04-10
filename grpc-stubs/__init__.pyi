@@ -584,7 +584,7 @@ class RpcMethodHandler(typing.Generic[TRequest, TResponse]):
 
 
 class HandlerCallDetails:
-    method_name: str
+    method: str
     invocation_metadata: Metadata
 
 
