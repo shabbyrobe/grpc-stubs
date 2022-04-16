@@ -47,12 +47,23 @@ written by hand.
 
 ## Calls for assistance
 
+There are several areas where `grpc-stubs` could use some TLC. If you'd like to help with any
+of this, please reach out!
+
+
+### API refresh
+
+The last GRPC version I did an API sweep against was the 1.24 series. As at 2022-04-16, we are now
+up to 1.45 (and counting). These stubs are in need of another sweep.
+
+
 ### Stubs for `aio` packages
 
 Several attempts have been made to contribute stubs for the `aio` packages, but have had to be reverted.
-A more substantive contribution would be very welcome, even if that is in the form of some MREs; I'm not
-sufficiently involved with `grpc` on a daily basis any more to be able to confidently integrate it myself
-without assistance.
+A more substantive contribution would be very welcome, even if that is just in the form of some complete
+Minimal Reproducible Examples; I'm not sufficiently involved with `grpc` on a daily basis any more to be able to
+confidently integrate it myself without assistance, but a decent set of MREs would make a big difference.
+
 
 ### Maintainers
 
