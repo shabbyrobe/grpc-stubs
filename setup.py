@@ -4,7 +4,7 @@ from typing import List
 from setuptools import find_packages
 from distutils.core import setup
 
-__version__ = "1.24.9"
+__version__ = "1.24.10"
 
 dependencies = [
     "typing-extensions; python_version<'3.8'",
@@ -24,7 +24,7 @@ def find_stub_files(name: str) -> List[str]:
     return result
 
 
-with open('README.rst', 'r') as f:
+with open('README.md', 'r') as f:
     readme = f.read()
 
 package_data = {
