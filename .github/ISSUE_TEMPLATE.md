@@ -3,10 +3,9 @@
 
 ## Minimum Reproducible Example
 
-> Pull requests will not be accepted without minimum reproducible examples. "Reproducible" in this case
-> means the following is provided, in separate `<details>` blocks, using as few files as possible. Gists
-> and links to other repositories are not acceptable as an MRE. Pull requests without an MRE will be
-> immediately closed.
+> Issues may be closed without minimum reproducible examples. "Reproducible" in this case
+> means the following is provided in this issue body, in separate `<details>` blocks, using as few files as possible. Gists
+> and links to other repositories are not acceptable as an MRE.
 >
 > - One or more python files containing reproducing code.
 > - Full set of shell commands (POSIX shell or bash only) required to create a venv, install
