@@ -19,11 +19,22 @@ Tests (courtesy of `pytest-mypy-plugins <https://github.com/typeddjango/pytest-m
 
 ### Minimum Reproducible Examples (MRE)
 
-Due to a series of incomplete PRs, starting from 2022-04-16, fairly strict issue and pull request
-templates have been added. Minimum Reproducible Examples are now a hard requirement for pull requests,
-and a soft requirement for issues. Incomplete PRs simply transfer the burden from the contributor to
-the maintainer, and I simply don't have time to do the deep-dives required to rebuild MREs from scratch
-when the issues from incomplete PRs inevitably crop up. 
+Unfortunately, due to the fussy nature of `grpc` and its dependencies, and the huge amount of time
+required to construct a context in which to verify and debug issues, starting from 2022-04-16, fairly strict issue and
+pull request templates have been added.
+
+Minimum Reproducible Examples are now a hard requirement for pull requests, and a soft requirement
+for issues. PRs without a functioning MRE simply transfer the burden from the contributor to the maintainer,
+and I simply don't have time to do the deep-dives required to rebuild MREs from scratch
+when issues inevitably crop up.
+
+
+### Tests
+
+This project uses a slightly old version of https://github.com/TypedDjango/pytest-mypy-plugins for testing.
+All new contributions will be required to include at least one, but probably multiple tests. See
+`typesafety/test_*.yml`.
+
 
 ### Code-generated stubs
 
