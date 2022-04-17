@@ -42,6 +42,6 @@ python main.py
 
 ## Checklist:
 
-- [ ] I have verified my MRE is sufficient to demonstrate the issue and solution
+- [ ] I have verified my MRE is sufficient to demonstrate the issue and solution by attempting to execute it myself
 - [ ] I have added tests to `typesafety/test_grpc.yml` for all APIs added or changed by this PR
 - [ ] I have removed any code generation notices from anything seeded using `mypy-protobuf`.
