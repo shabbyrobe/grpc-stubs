@@ -23,10 +23,11 @@ Unfortunately, due to the fussy nature of `grpc` and its dependencies, and the h
 required to construct a context in which to verify and debug issues, starting from 2022-04-16, fairly strict issue and
 pull request templates have been added.
 
-Minimum Reproducible Examples are now a hard requirement for pull requests, and a soft requirement
-for issues. PRs without a functioning MRE simply transfer the burden from the contributor to the maintainer,
-and I simply don't have time to do the deep-dives required to rebuild MREs from scratch
-when issues inevitably crop up.
+Minimum Reproducible Examples are now a hard requirement for pull requests that touch the typing surface,
+and a soft requirement for issues. PRs without a functioning MRE transfer the burden entirely from the
+contributor to the maintainer, and I simply don't have time to do the deep-dives required to build out MREs
+from scratch when issues inevitably crop up. PRs without a trivially executable MRE will be closed without further
+consideration; of course you are always welcome to reopen once you have added a verified MRE!
 
 
 ### Tests
