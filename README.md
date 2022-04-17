@@ -2,14 +2,14 @@ gRPC Typing Stubs for Python
 ============================
 
 This is a PEP-561-compliant stub-only package which provides type information of
-`gRPC <https://grpc.io>`_.
+[gRPC](https://grpc.io>).
 
-Install using pip::
+Install using pip:
 
     pip install grpc-stubs
 
 
-Tests (courtesy of `pytest-mypy-plugins <https://github.com/typeddjango/pytest-mypy-plugins>`_)::
+Tests (courtesy of [pytest-mypy-plugins](https://github.com/typeddjango/pytest-mypy-plugins>):
 
     pip install -r requirements-dev.txt
     ./tools.sh test
