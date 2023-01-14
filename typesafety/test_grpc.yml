@@ -61,7 +61,7 @@
     call_iter: grpc.CallIterator[str] = t.cast(t.Any, None)
     for call in call_iter:
       pass
-    reveal_type(call)  # N: Revealed type is "builtins.str*"
+    reveal_type(call)  # N: Revealed type is "builtins.str"
 
 - case: alts_credentials
   main: |

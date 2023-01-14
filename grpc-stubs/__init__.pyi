@@ -94,11 +94,11 @@ def access_token_call_credentials(access_token: str) -> CallCredentials:
     ...
 
 def alts_channel_credentials(
-    service_accounts: typing.Sequence[str] = None,
+    service_accounts: typing.Optional[typing.Sequence[str]] = None,
 ) -> ChannelCredentials: ...
 def compute_engine_channel_credentials() -> ChannelCredentials: ...
 def xds_channel_credentials(
-    fallback_credentials: ChannelCredentials = None,
+    fallback_credentials: typing.Optional[ChannelCredentials] = None,
 ) -> ChannelCredentials: ...
 
 # GRPC docs say there should be at least two:

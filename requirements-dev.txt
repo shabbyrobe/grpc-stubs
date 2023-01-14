@@ -1,5 +1,5 @@
 black
-pytest-mypy-plugins==1.4.0
+pytest-mypy-plugins==1.10.1
 mypy>=0.902
 twine
 wheel
