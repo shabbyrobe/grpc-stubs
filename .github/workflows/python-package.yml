@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
-    steps:
+    steps: &build_steps
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -21,3 +21,11 @@ jobs:
         ./tools.sh dev-setup
     - name: Run tests
       run: ./tools.sh test
+
+  build-py36:
+    runs-on: ubuntu-2004
+    strategy:
+      matrix:
+        python-version: ["3.6"]
+
+    steps: *build_steps
