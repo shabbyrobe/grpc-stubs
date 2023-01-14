@@ -10,5 +10,5 @@ class ReflectionServicer(BaseReflectionServicer):
     def ServerReflectionInfo(self, request_iterator: Iterable[_reflection_pb2.ServerReflectionRequest], context: ServicerContext) -> None:
         ...
 
-def enable_server_reflection(service_names: List[str], server: grpc.Server, pool: Optional[descriptor_pool.DescriptorPool] = ...) -> None:
+def enable_server_reflection(service_names: List[str], server: Server, pool: Optional[descriptor_pool.DescriptorPool] = ...) -> None:
     ...

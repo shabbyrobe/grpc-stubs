@@ -1,14 +1,8 @@
 import enum
 import threading
 import typing
-import sys
 from concurrent import futures
 from types import TracebackType
-if sys.version_info[:2] >= (3, 8):
-    from typing import Literal
-else:
-    # Python 3.7 and earlier
-    from typing_extensions import Literal
 
 __version__: str
 
