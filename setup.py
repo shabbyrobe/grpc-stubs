@@ -7,7 +7,6 @@ from distutils.core import setup
 __version__ = "1.24.11"
 
 dependencies = [
-    "typing-extensions; python_version<'3.8'",
     'grpcio',
 ]
 
