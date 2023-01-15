@@ -15,6 +15,15 @@ Tests (courtesy of [pytest-mypy-plugins](https://github.com/typeddjango/pytest-m
     ./tools.sh test
 
 
+## Python Support
+
+- grpc-stubs is tested with 3.7 or later, but ideally it should support Python 3.6 as
+  grpc still supports this. Python 3.6 had to be disabled in the tests due to
+  various cascading fiascos and a lack of time to contend with them. Feel free
+  to submit a PR if you'd like to see it returned, or open issues. Ensure that
+  you supply an MRE as per the contributing guidelines below.
+
+
 ## Contributing
 
 ### Minimum Reproducible Examples (MRE)

@@ -1,9 +1,0 @@
-black
-
-# support for python 3.6 was dropped, but we don't want to drop python 3.6 support yet.
-pytest-mypy-plugins==1.9.3
-
-mypy>=0.902
-twine
-wheel
--e .
