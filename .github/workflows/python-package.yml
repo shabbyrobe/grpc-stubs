@@ -37,6 +37,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          ./tools.sh dev-setup
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements-dev-py36.txt
       - name: Run tests
         run: ./tools.sh test
