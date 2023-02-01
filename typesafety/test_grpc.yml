@@ -5,6 +5,13 @@
     reveal_type(Channel())  # N: Revealed type is "grpc.Channel"
     reveal_type(Server())   # N: Revealed type is "grpc.Server"
 
+- case: grpc_aio
+  main: |
+    from grpc.aio import Channel, Server
+
+    reveal_type(Channel())  # N: Revealed type is "grpc.aio.Channel"
+    reveal_type(Server())   # N: Revealed type is "grpc.aio.Server"
+
 - case: grpc_status
   main: |
     from grpc import Status
