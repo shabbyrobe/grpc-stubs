@@ -85,3 +85,34 @@
     reveal_type(creds)  # N: Revealed type is "grpc.ChannelCredentials"
     screds = grpc.xds_server_credentials(grpc.insecure_server_credentials())
     reveal_type(screds)  # N: Revealed type is "grpc.ServerCredentials"
+
+- case: multi_callable
+  main: |
+    import grpc
+
+    class DummyRequest:
+      pass
+
+    class DummyReply:
+      pass
+
+    class DummyServiceStub:
+      UnaryUnary: grpc.UnaryUnaryMultiCallable[DummyRequest, DummyReply]
+      UnaryStream: grpc.UnaryStreamMultiCallable[DummyRequest, DummyReply]
+      StreamUnary: grpc.StreamUnaryMultiCallable[DummyRequest, DummyReply]
+      StreamStream: grpc.StreamStreamMultiCallable[DummyRequest, DummyReply]
+
+    stub = DummyServiceStub()
+    req = DummyRequest()
+
+    reveal_type(stub.UnaryUnary(req))  # N: Revealed type is "main.DummyReply"
+
+    for resp in stub.UnaryStream(req):
+      pass
+    reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+    reveal_type(stub.StreamUnary(iter([req])))  # N: Revealed type is "main.DummyReply"
+
+    for resp in stub.StreamStream(iter([req])):
+      pass
+    reveal_type(resp)  # N: Revealed type is "main.DummyReply"
