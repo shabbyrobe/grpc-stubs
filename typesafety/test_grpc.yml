@@ -123,3 +123,35 @@
     for resp in stub.StreamStream(iter([req])):
       pass
     reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+- case: aio_multi_callable
+  main: |
+    import grpc.aio
+
+    class DummyRequest:
+      pass
+
+    class DummyReply:
+      pass
+
+    class DummyServiceStub:
+      UnaryUnary: grpc.aio.UnaryUnaryMultiCallable[DummyRequest, DummyReply]
+      UnaryStream: grpc.aio.UnaryStreamMultiCallable[DummyRequest, DummyReply]
+      StreamUnary: grpc.aio.StreamUnaryMultiCallable[DummyRequest, DummyReply]
+      StreamStream: grpc.aio.StreamStreamMultiCallable[DummyRequest, DummyReply]
+
+    stub = DummyServiceStub()
+    req = DummyRequest()
+
+    async def async_context() -> None:
+      reveal_type(await stub.UnaryUnary(req))  # N: Revealed type is "main.DummyReply"
+
+      async for resp in stub.UnaryStream(req):
+        pass
+      reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+      reveal_type(await stub.StreamUnary(iter([req])))  # N: Revealed type is "main.DummyReply"
+
+      async for resp in stub.StreamStream(iter([req])):
+        pass
+      reveal_type(resp)  # N: Revealed type is "main.DummyReply"
