@@ -3,6 +3,7 @@ from concurrent import futures
 from types import TracebackType
 from . import (
     _Options,
+    _PartialStubMustCastOrIgnore,
     Compression,
     GenericRpcHandler,
     ServerCredentials,
@@ -13,8 +14,7 @@ from . import (
 
 """Create Client"""
 
-# FIXME
-ClientInterceptor = typing.Any
+ClientInterceptor = _PartialStubMustCastOrIgnore
 
 def insecure_channel(
     target: str,
@@ -32,10 +32,12 @@ def secure_channel(
 
 """Create Server"""
 
+ServerInterceptor = _PartialStubMustCastOrIgnore
+
 def server(
     migration_thread_pool: typing.Optional[futures.Executor] = None,
     handlers: typing.Optional[typing.Sequence[GenericRpcHandler]] = None,
-    interceptors: typing.Optional[typing.Sequence[typing.Any]] = None,
+    interceptors: typing.Optional[typing.Sequence[ServerInterceptor]] = None,
     options: typing.Optional[_Options] = None,
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
@@ -109,8 +111,7 @@ class Server:
 """Client-Side Context"""
 
 DoneCallbackType = typing.Callable[[typing.Any], None]
-# FIXME
-EOFType = typing.Any
+EOFType = _PartialStubMustCastOrIgnore
 
 class RpcContext:
     def cancelled(self) -> bool: ...

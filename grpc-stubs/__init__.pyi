@@ -6,6 +6,15 @@ from types import TracebackType
 
 __version__: str
 
+# This class encodes an uninhabited type, requiring use of explicit casts or ignores
+# in order to satisfy type checkers. This allows grpc-stubs to add proper stubs
+# later, allowing those overrides to be removed.
+# The alternative is typing.Any, but a future replacement of Any with a proper type
+# would result in type errors where previously the type checker was happy, which
+# we want to avoid. Forcing the user to use overrides provides forwards-compatibility.
+class _PartialStubMustCastOrIgnore:
+    pass
+
 
 # XXX: Early attempts to tame this used literals for all the keys (gRPC is
 # a bit segfaulty and doesn't adequately validate the option keys), but that
