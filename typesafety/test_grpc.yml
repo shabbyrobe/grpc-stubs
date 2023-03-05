@@ -5,6 +5,13 @@
     reveal_type(Channel())  # N: Revealed type is "grpc.Channel"
     reveal_type(Server())   # N: Revealed type is "grpc.Server"
 
+- case: grpc_aio
+  main: |
+    from grpc.aio import Channel, Server
+
+    reveal_type(Channel())  # N: Revealed type is "grpc.aio.Channel"
+    reveal_type(Server())   # N: Revealed type is "grpc.aio.Server"
+
 - case: grpc_status
   main: |
     from grpc import Status
@@ -85,3 +92,77 @@
     reveal_type(creds)  # N: Revealed type is "grpc.ChannelCredentials"
     screds = grpc.xds_server_credentials(grpc.insecure_server_credentials())
     reveal_type(screds)  # N: Revealed type is "grpc.ServerCredentials"
+
+- case: multi_callable
+  main: |
+    import grpc
+
+    class DummyRequest:
+      pass
+
+    class DummyReply:
+      pass
+
+    class DummyServiceStub:
+      UnaryUnary: grpc.UnaryUnaryMultiCallable[DummyRequest, DummyReply]
+      UnaryStream: grpc.UnaryStreamMultiCallable[DummyRequest, DummyReply]
+      StreamUnary: grpc.StreamUnaryMultiCallable[DummyRequest, DummyReply]
+      StreamStream: grpc.StreamStreamMultiCallable[DummyRequest, DummyReply]
+
+    stub = DummyServiceStub()
+    req = DummyRequest()
+
+    reveal_type(stub.UnaryUnary(req))  # N: Revealed type is "main.DummyReply"
+
+    for resp in stub.UnaryStream(req):
+      pass
+    reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+    reveal_type(stub.StreamUnary(iter([req])))  # N: Revealed type is "main.DummyReply"
+
+    for resp in stub.StreamStream(iter([req])):
+      pass
+    reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+- case: aio_multi_callable
+  main: |
+    import grpc.aio
+
+    class DummyRequest:
+      pass
+
+    class DummyReply:
+      pass
+
+    class DummyServiceStub:
+      UnaryUnary: grpc.aio.UnaryUnaryMultiCallable[DummyRequest, DummyReply]
+      UnaryStream: grpc.aio.UnaryStreamMultiCallable[DummyRequest, DummyReply]
+      StreamUnary: grpc.aio.StreamUnaryMultiCallable[DummyRequest, DummyReply]
+      StreamStream: grpc.aio.StreamStreamMultiCallable[DummyRequest, DummyReply]
+
+    stub = DummyServiceStub()
+    req = DummyRequest()
+
+    async def async_context() -> None:
+      reveal_type(await stub.UnaryUnary(req))  # N: Revealed type is "main.DummyReply"
+
+      async for resp in stub.UnaryStream(req):
+        pass
+      reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+      reveal_type(await stub.StreamUnary(iter([req])))  # N: Revealed type is "main.DummyReply"
+
+      async for resp in stub.StreamStream(iter([req])):
+        pass
+      reveal_type(resp)  # N: Revealed type is "main.DummyReply"
+
+- case: aio_interceptors_casts
+  main: |
+    import typing
+    import grpc.aio
+
+    client_interceptors = [typing.cast(grpc.aio.ClientInterceptor, "interceptor")]
+    grpc.aio.insecure_channel("target", interceptors=client_interceptors)
+
+    server_interceptors = [typing.cast(grpc.aio.ServerInterceptor, "interceptor")]
+    grpc.aio.server(interceptors=server_interceptors)
