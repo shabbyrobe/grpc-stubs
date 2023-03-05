@@ -45,6 +45,9 @@ def server(
 
 """Channel Object"""
 
+# XXX: The docs suggest these type signatures for aio, but not for non-async,
+# and it's unclear why;
+# https://grpc.github.io/grpc/python/grpc_asyncio.html#grpc.aio.Channel.stream_stream
 RequestSerializer = typing.Callable[[typing.Any], bytes]
 ResponseDeserializer = typing.Callable[[bytes], typing.Any]
 
@@ -111,7 +114,7 @@ class Server:
 """Client-Side Context"""
 
 DoneCallbackType = typing.Callable[[typing.Any], None]
-EOFType = _PartialStubMustCastOrIgnore
+EOFType = object
 
 class RpcContext:
     def cancelled(self) -> bool: ...
