@@ -2,7 +2,7 @@ import enum
 import threading
 import typing
 from concurrent import futures
-from types import TracebackType
+from types import ModuleType, TracebackType
 
 __version__: str
 
@@ -85,12 +85,10 @@ def ssl_channel_credentials(
 ) -> ChannelCredentials:
     ...
 
-
 def local_channel_credentials(
     local_connect_type: LocalConnectionType = LocalConnectionType.LOCAL_TCP,
 ) -> ChannelCredentials:
     ...
-
 
 def metadata_call_credentials(
     metadata_plugin: AuthMetadataPlugin,
@@ -98,14 +96,15 @@ def metadata_call_credentials(
 ) -> CallCredentials:
     ...
 
-
 def access_token_call_credentials(access_token: str) -> CallCredentials:
     ...
 
 def alts_channel_credentials(
     service_accounts: typing.Optional[typing.Sequence[str]] = None,
 ) -> ChannelCredentials: ...
+
 def compute_engine_channel_credentials() -> ChannelCredentials: ...
+
 def xds_channel_credentials(
     fallback_credentials: typing.Optional[ChannelCredentials] = None,
 ) -> ChannelCredentials: ...
@@ -117,8 +116,6 @@ def composite_call_credentials(
     *rest: CallCredentials,
 ) -> CallCredentials:
     ...
-
-
 
 # Compose a ChannelCredentials and one or more CallCredentials objects.
 def composite_channel_credentials(
@@ -138,6 +135,7 @@ def server(
     options: typing.Optional[_Options] = None,
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
+    xds: bool = False,
 ) -> Server:
     ...
 
@@ -175,7 +173,9 @@ def dynamic_ssl_server_credentials(
     ...
 
 def alts_server_credentials() -> ServerCredentials: ...
+
 def insecure_server_credentials() -> ServerCredentials: ...
+
 def xds_server_credentials(
     fallback_credentials: ServerCredentials,
 ) -> ServerCredentials: ...
@@ -566,6 +566,8 @@ class ServicerContext(RpcContext):
     # misnamed function 'details', does not align with status.proto, where it is called 'message':
     def set_details(self, details: str) -> None: ...
 
+    def trailing_metadata(self) -> Metadata: ...
+
 
 """Service-Side Handler"""
 
@@ -597,7 +599,7 @@ class GenericRpcHandler(typing.Generic[TRequest, TResponse]):
     def service(self, handler_call_details: HandlerCallDetails) -> typing.Optional[RpcMethodHandler[TRequest, TResponse]]:
         ...
 
-class ServiceRpcHandler:
+class ServiceRpcHandler(GenericRpcHandler[TRequest, TResponse], typing.Generic[TRequest, TResponse]):
     def service_name(self) -> str: ...
 
 
@@ -771,4 +773,16 @@ class Future(typing.Generic[TFutureValue]):
 
     # FIXME: unsure of the exact return type here. Is it a traceback.StackSummary?
     def traceback(self, timeout: typing.Optional[float] = None) -> typing.Any: ...
+
+
+"""Runtime Protobuf Parsing"""
+
+def protos(protobuf_path: str) -> ModuleType:
+    ...
+
+def services(protobuf_path: str) -> ModuleType:
+    ...
+
+def protos_and_services(protobuf_path: str) -> typing.Tuple[ModuleType, ModuleType]:
+    ...
 
