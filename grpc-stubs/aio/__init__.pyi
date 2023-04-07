@@ -244,8 +244,6 @@ class ClientCallDetails:
     ) -> None:
         ...
 
-    # "This is an EXPERIMENTAL argument. An optional flag t enable wait for ready mechanism."
-    wait_for_ready: typing.Optional[bool]
     method: str
     timeout: typing.Optional[float]
     metadata: typing.Optional[Metadata]
