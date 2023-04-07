@@ -1,16 +1,44 @@
+import asyncio
 import typing
 from concurrent import futures
 from types import TracebackType
-from . import (
+from grpc import (
     _Options,
     _PartialStubMustCastOrIgnore,
+    RpcError,
     Compression,
     GenericRpcHandler,
     ServerCredentials,
     StatusCode,
     ChannelCredentials,
     CallCredentials,
+    ChannelConnectivity,
+    HandlerCallDetails,
+    RpcMethodHandler,
 )
+
+"""Exceptions"""
+class BaseError(Exception): ...
+class UsageError(BaseError): ...
+class AbortError(BaseError): ...
+class InternalError(BaseError): ...
+
+class AioRpcError(RpcError):
+    def __init__(
+        self,
+        code: StatusCode,
+        initial_metadata: Metadata,
+        trailing_metadata: Metadata,
+        details: typing.Optional[str],
+        debug_error_string: typing.Optional[str],
+    ) -> None:
+        ...
+
+    # FIXME: confirm if these are present in the parent type. The remaining
+    # methods already exist.
+    def debug_error_string(self) -> str: ...
+    def initial_metadata(self) -> Metadata: ...
+
 
 """Create Client"""
 
@@ -30,9 +58,8 @@ def secure_channel(
     interceptors: typing.Optional[typing.Sequence[ClientInterceptor]] = None,
 ) -> Channel: ...
 
-"""Create Server"""
 
-ServerInterceptor = _PartialStubMustCastOrIgnore
+"""Create Server"""
 
 def server(
     migration_thread_pool: typing.Optional[futures.Executor] = None,
@@ -42,6 +69,7 @@ def server(
     maximum_concurrent_rpcs: typing.Optional[int] = None,
     compression: typing.Optional[Compression] = None,
 ) -> Server: ...
+
 
 """Channel Object"""
 
@@ -53,37 +81,48 @@ ResponseDeserializer = typing.Callable[[bytes], typing.Any]
 
 class Channel:
     async def close(self, grace: typing.Optional[float]) -> None: ...
+
+    def get_state(self, try_to_connect: bool = False) -> ChannelConnectivity: ...
+
+    async def wait_for_state_change(self, last_observed_state: ChannelConnectivity) -> None: ...
+
     def stream_stream(
         self,
         method: str,
         request_serializer: typing.Optional[RequestSerializer],
         response_deserializer: typing.Optional[ResponseDeserializer],
     ) -> StreamStreamMultiCallable: ...
+
     def stream_unary(
         self,
         method: str,
         request_serializer: typing.Optional[RequestSerializer],
         response_deserializer: typing.Optional[ResponseDeserializer],
     ) -> StreamUnaryMultiCallable: ...
+
     def unary_stream(
         self,
         method: str,
         request_serializer: typing.Optional[RequestSerializer],
         response_deserializer: typing.Optional[ResponseDeserializer],
     ) -> UnaryStreamMultiCallable: ...
+
     def unary_unary(
         self,
         method: str,
         request_serializer: typing.Optional[RequestSerializer],
         response_deserializer: typing.Optional[ResponseDeserializer],
     ) -> UnaryUnaryMultiCallable: ...
+
     async def __aenter__(self) -> Channel: ...
+
     async def __aexit__(
         self,
         exc_type: typing.Optional[typing.Type[BaseException]],
         exc_val: typing.Optional[BaseException],
         exc_tb: typing.Optional[TracebackType],
     ) -> typing.Optional[bool]: ...
+
     async def channel_ready(self) -> None: ...
 
 """Server Object"""
@@ -101,6 +140,7 @@ class Server:
     def add_secure_port(
         self, address: str, server_credentials: ServerCredentials
     ) -> int: ...
+
     async def start(self) -> None: ...
 
     # Grace period is in seconds.
@@ -153,16 +193,26 @@ TResponse = typing.TypeVar("TResponse")
 
 """Service-Side Context"""
 
+class DoneCallback(typing.Generic[TRequest, TResponse]):
+    def __call__(
+        self,
+        ctx: ServicerContext[TRequest, TResponse],
+    ) -> None:
+        ...
+
 class ServicerContext(typing.Generic[TRequest, TResponse]):
-    async def read(self) -> TRequest: ...
-    async def write(self, message: TResponse) -> None: ...
-    async def send_initial_metadata(self, initial_metadata: MetadataType) -> None: ...
     async def abort(
         self,
         code: StatusCode,
         details: str = "",
         trailing_metadata: MetadataType = tuple(),
     ) -> typing.NoReturn: ...
+
+    async def read(self) -> TRequest: ...
+    async def write(self, message: TResponse) -> None: ...
+    async def send_initial_metadata(self, initial_metadata: MetadataType) -> None: ...
+
+    def add_done_callback(self, callback: DoneCallback[TRequest, TResponse]) -> None: ...
     def set_trailing_metadata(self, trailing_metadata: MetadataType) -> None: ...
     def invocation_metadata(self) -> typing.Optional[Metadata]: ...
     def set_code(self, code: StatusCode) -> None: ...
@@ -179,6 +229,150 @@ class ServicerContext(typing.Generic[TRequest, TResponse]):
     def details(self) -> str: ...
     def cancelled(self) -> bool: ...
     def done(self) -> bool: ...
+
+
+"""Client-Side Interceptor"""
+
+class ClientCallDetails:
+    def __init__(
+        self,
+        method: str,
+        timeout: typing.Optional[float],
+        metadata: typing.Optional[Metadata],
+        credentials: typing.Optional[CallCredentials],
+        wait_for_ready: typing.Optional[bool],
+    ) -> None:
+        ...
+
+    method: str
+    timeout: typing.Optional[float]
+    metadata: typing.Optional[Metadata]
+    credentials: typing.Optional[CallCredentials]
+
+    # "This is an EXPERIMENTAL argument. An optional flag t enable wait for ready mechanism."
+    wait_for_ready: typing.Optional[bool]
+
+    # As at 1.53.0, this is not supported in aio:
+    # compression: typing.Optional[Compression]
+
+
+class InterceptedCall(typing.Generic[TRequest, TResponse]):
+    def __init__(self, interceptors_task: asyncio.Task) -> None: ...
+    def __del__(self): ...
+
+    def cancel(self) -> bool: ...
+    def cancelled(self) -> bool: ...
+    def done(self) -> bool: ...
+    def add_done_callback(self, callback: DoneCallback[TRequest, TResponse]) -> None: ...
+    def time_remaining(self) -> typing.Optional[float]: ...
+    async def initial_metadata(self) -> typing.Optional[Metadata]: ...
+    async def trailing_metadata(self) -> typing.Optional[Metadata]: ...
+    async def code(self) -> StatusCode: ...
+    async def details(self) -> str: ...
+    async def debug_error_string(self) -> typing.Optional[str]: ...
+    async def wait_for_connection(self) -> None: ...
+
+
+class InterceptedUnaryUnaryCall(InterceptedCall[TRequest, TResponse], typing.Generic[TRequest, TResponse]):
+    def __await__(self): ...
+
+    def __init__(
+        self,
+        interceptors: typing.Sequence[UnaryUnaryClientInterceptor],
+        request: TRequest,
+        timeout: typing.Optional[float],
+        metadata: Metadata,
+        credentials: typing.Optional[CallCredentials],
+        wait_for_ready: typing.Optional[bool],
+        channel: Channel,
+        method: bytes,
+        request_serializer: RequestSerializer,
+        response_deserializer: ResponseDeserializer,
+        loop: asyncio.AbstractEventLoop,
+    ) -> None:
+        ...
+
+    # pylint: disable=too-many-arguments
+    async def _invoke(
+        self,
+        interceptors: typing.Sequence[UnaryUnaryClientInterceptor],
+        method: bytes,
+        timeout: typing.Optional[float],
+        metadata: typing.Optional[Metadata],
+        credentials: typing.Optional[CallCredentials],
+        wait_for_ready: typing.Optional[bool],
+        request: TRequest,
+        request_serializer: RequestSerializer,
+        response_deserializer: ResponseDeserializer,
+    ) -> UnaryUnaryCall:
+        ...
+
+    def time_remaining(self) -> typing.Optional[float]: ...
+
+
+class UnaryUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
+    async def intercept_unary_unary(
+        self,
+        # XXX: See equivalent function in grpc types for notes about continuation:
+        continuation: typing.Callable[[ClientCallDetails, TRequest], UnaryUnaryCall[TRequest, TResponse]],
+        client_call_details: ClientCallDetails,
+        request: TRequest,
+    ) -> TResponse:
+        ...
+
+
+class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
+    async def intercept_unary_stream(
+        self,
+        continuation: typing.Callable[[ClientCallDetails, TRequest], UnaryStreamCall[TRequest, TResponse]],
+        client_call_details: ClientCallDetails,
+        request: TRequest,
+    ) -> typing.Union[
+        typing.AsyncIterable[TResponse],
+        UnaryStreamCall[TRequest, TResponse],
+    ]:
+        ...
+
+
+class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
+    async def intercept_stream_unary(
+        self,
+        continuation: typing.Callable[[ClientCallDetails, TRequest], StreamUnaryCall[TRequest, TResponse]],
+        client_call_details: ClientCallDetails,
+        request_iterator: typing.Union[typing.AsyncIterable[TRequest], typing.Iterable[TRequest]],
+    ) -> typing.Union[
+        typing.AsyncIterable[TResponse],
+        UnaryStreamCall[TRequest, TResponse],
+    ]:
+        ...
+
+
+class StreamStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
+    async def intercept_stream_stream(
+        self,
+        continuation: typing.Callable[[ClientCallDetails, TRequest], StreamStreamCall[TRequest, TResponse]],
+        client_call_details: ClientCallDetails,
+        request_iterator: typing.Union[typing.AsyncIterable[TRequest], typing.Iterable[TRequest]],
+    ) -> typing.Union[
+        typing.AsyncIterable[TResponse],
+        StreamStreamCall[TRequest, TResponse],
+    ]:
+        ...
+
+
+"""Server-Side Interceptor"""
+
+class ServerInterceptor(typing.Generic[TRequest, TResponse]):
+    async def intercept_service(
+        self,
+        continuation: typing.Callable[
+            [HandlerCallDetails],
+            typing.Awaitable[RpcMethodHandler[TRequest, TResponse]],
+        ],
+        handler_call_details: HandlerCallDetails,
+    ) -> RpcMethodHandler[TRequest, TResponse]:
+        ...
+
 
 """Multi-Callable Interfaces"""
 
@@ -233,6 +427,7 @@ class StreamStreamMultiCallable(typing.Generic[TRequest, TResponse]):
         wait_for_ready: typing.Optional[bool] = None,
         compression: typing.Optional[Compression] = None,
     ) -> StreamStreamCall[TRequest, TResponse]: ...
+
 
 """Metadata"""
 

@@ -191,3 +191,18 @@
     if svc is not None and svc.unary_unary is not None:
       svc.unary_unary(Request(), ctx)
 
+- case: issue_35_missing_aio_types
+  main: |
+    from grpc.aio import (
+      UnaryUnaryClientInterceptor,
+      UnaryStreamClientInterceptor,
+      StreamUnaryClientInterceptor,
+      StreamStreamClientInterceptor,
+      AioRpcError,
+      ClientCallDetails,
+      Channel,
+      Server,
+      ServicerContext,
+    )
+    reveal_type(Channel())  # N: Revealed type is "grpc.aio.Channel"
+
