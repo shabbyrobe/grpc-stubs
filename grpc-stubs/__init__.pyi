@@ -418,11 +418,14 @@ class _Metadatum:
     value: bytes
 
 
+# FIXME: There is scant documentation about what is actually available in this type.
+# The properties here are the properties observed in the wild, and may be inaccurate.
+# A better source to confirm their presence needs to be found at some point.
 class RpcError(Exception):
     def code(self) -> StatusCode: ...
 
     # misnamed property, does not align with status.proto, where it is called 'message':
-    def details(self) -> str: ...
+    def details(self) -> typing.Optional[str]: ...
 
     # XXX: This has a slightly different return type to all the other metadata:
     def trailing_metadata(self) -> typing.Tuple[_Metadatum, ...]: ...
@@ -471,7 +474,7 @@ TResponse = typing.TypeVar("TResponse")
 # response message of the RPC. Should the event terminate with non-OK
 # status, the returned Call-Future’s exception value will be an RpcError.
 #
-class CallFuture(typing.Generic[TResponse], Call, Future[TResponse]):
+class CallFuture(Call, Future[TResponse], typing.Generic[TResponse]):
     pass
 
 
