@@ -166,3 +166,28 @@
 
     server_interceptors = [typing.cast(grpc.aio.ServerInterceptor, "interceptor")]
     grpc.aio.server(interceptors=server_interceptors)
+
+- case: service_rpc_handler_inheritance
+  main: |
+    import typing
+    import grpc
+
+    class Request: pass
+    class Response: pass
+
+    def unary_unary_call(rq: Request, ctx: grpc.ServicerContext) -> Response:
+      reveal_type(rq)  # N: Revealed type is "main.Request"
+      return Response()
+
+    class ServiceHandler(grpc.ServiceRpcHandler[Request, Response]):
+      def service(self, handler_call_details: grpc.HandlerCallDetails) -> typing.Optional[grpc.RpcMethodHandler[Request, Response]]:
+        rpc = grpc.RpcMethodHandler[Request, Response]()
+        rpc.unary_unary = unary_unary_call
+        return rpc
+
+    h = ServiceHandler()
+    ctx = grpc.ServicerContext()
+    svc = h.service(grpc.HandlerCallDetails())
+    if svc is not None and svc.unary_unary is not None:
+      svc.unary_unary(Request(), ctx)
+
