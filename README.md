@@ -17,11 +17,11 @@ Tests (courtesy of [pytest-mypy-plugins](https://github.com/typeddjango/pytest-m
 
 ## Python Support
 
-- grpc-stubs is tested with 3.7 or later, but ideally it should support Python 3.6 as
-  grpc still supports this. Python 3.6 had to be disabled in the tests due to
-  various cascading fiascos and a lack of time to contend with them. Feel free
-  to submit a PR if you'd like to see it returned, or open issues. Ensure that
-  you supply an MRE as per the contributing guidelines below.
+grpc-stubs is tested with 3.7 or later, but ideally it should support Python 3.6 as
+grpc still supports this. Python 3.6 had to be disabled in the tests due to
+various cascading fiascos and a lack of time to contend with them. Feel free
+to submit a PR if you'd like to see it returned, or open issues. Ensure that
+you supply an MRE as per the contributing guidelines below.
 
 
 ## Contributing
@@ -59,20 +59,6 @@ written by hand.
 
 There are several areas where `grpc-stubs` could use some TLC. If you'd like to help with any
 of this, please reach out!
-
-
-### API refresh
-
-The last GRPC version I did an API sweep against was the 1.24 series. As at 2022-04-16, we are now
-up to 1.45 (and counting). These stubs are in need of another sweep.
-
-
-### Stubs for `aio` packages
-
-Several attempts have been made to contribute stubs for the `aio` packages, but have had to be reverted.
-A more substantive contribution would be very welcome, even if that is just in the form of some complete
-Minimal Reproducible Examples; I'm not sufficiently involved with `grpc` on a daily basis any more to be able to
-confidently integrate it myself without assistance, but a decent set of MREs would make a big difference.
 
 
 ### Maintainers
