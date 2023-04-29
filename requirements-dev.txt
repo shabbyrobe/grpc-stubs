@@ -1,6 +1,7 @@
 black
 pytest-mypy-plugins==1.10.1
 mypy>=0.902
+types-protobuf
 twine
 wheel
 -e .
