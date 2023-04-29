@@ -1,14 +1,27 @@
+import typing
+
+import grpc
+from grpc import aio
 from google.protobuf import descriptor_pool
-from grpc import Server, ServicerContext
 from grpc_reflection.v1alpha import reflection_pb2 as _reflection_pb2
 from grpc_reflection.v1alpha._base import BaseReflectionServicer
-from typing import Iterable, List, Optional
 
 SERVICE_NAME: str
 
+AnyServer = typing.Union[grpc.Server, aio.Server]
+AnyServicerContext = typing.Union[grpc.ServicerContext, aio.ServicerContext]
+
 class ReflectionServicer(BaseReflectionServicer):
-    def ServerReflectionInfo(self, request_iterator: Iterable[_reflection_pb2.ServerReflectionRequest], context: ServicerContext) -> None:
+    def ServerReflectionInfo(
+        self,
+        request_iterator: typing.Iterable[_reflection_pb2.ServerReflectionRequest],
+        context: AnyServicerContext,
+    ) -> None:
         ...
 
-def enable_server_reflection(service_names: List[str], server: Server, pool: Optional[descriptor_pool.DescriptorPool] = ...) -> None:
+def enable_server_reflection(
+    service_names: typing.List[str],
+    server: AnyServer,
+    pool: typing.Optional[descriptor_pool.DescriptorPool] = ...,
+) -> None:
     ...
