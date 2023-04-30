@@ -19,9 +19,20 @@ cmd-dev-setup() {
 cmd-test() {
   source venv/bin/activate
 
-  pushd "$script_abspath/grpc-stubs" > /dev/null
-    mypy -- *.pyi
-  popd > /dev/null
+  dirs=(
+    "grpc-stubs"
+    "grpc_channelz-stubs"
+    "grpc_health-stubs"
+    "grpc_reflection-stubs"
+    "grpc_status-stubs"
+  )
+
+  for dir in "${dirs[@]}"; do
+    pushd "$script_abspath/$dir" > /dev/null
+      echo "$dir"
+      mypy -- .
+    popd > /dev/null
+  done
 
   # This test setup is based on the instructions here:
   # https://sobolevn.me/2019/08/testing-mypy-types
