@@ -222,3 +222,14 @@
     server = typing.cast(aio.Server, None)
     enable_server_reflection(["foo"], server, None)
 
+- case: issue_30_healthservicer_set
+  main: |
+    import typing
+    import grpc
+    from grpc_health.v1 import health, health_pb2, health_pb2_grpc
+    server = typing.cast(grpc.Server, None)
+    health_servicer = typing.cast(health.HealthServicer, None)
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+    service = "service"
+    health_servicer.set(service, health_pb2.HealthCheckResponse.SERVING)
+
