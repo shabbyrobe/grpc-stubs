@@ -669,7 +669,7 @@ class UnaryUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
         ...
 
 
-class UnaryStreamMultiCallable(typing.Generic[TRequest, TResponse]):
+class UnaryStreamMultiCallable(CallFuture[TResponse], typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request: TRequest,
@@ -733,7 +733,7 @@ class StreamUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
         ...
 
 
-class StreamStreamMultiCallable(typing.Generic[TRequest, TResponse]):
+class StreamStreamMultiCallable(CallFuture[TResponse], typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request_iterator: typing.Iterator[TRequest],
