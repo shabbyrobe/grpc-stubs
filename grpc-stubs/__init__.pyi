@@ -616,7 +616,7 @@ class ServerInterceptor(typing.Generic[TRequest, TResponse]):
             typing.Optional[RpcMethodHandler[TRequest, TResponse]]
         ],
         handler_call_details: HandlerCallDetails,
-    ) -> RpcMethodHandler[TRequest, TResponse]:
+    ) -> typing.Optional[RpcMethodHandler[TRequest, TResponse]]:
         ...
 
 
