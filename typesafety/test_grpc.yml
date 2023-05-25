@@ -222,3 +222,29 @@
     server = typing.cast(aio.Server, None)
     enable_server_reflection(["foo"], server, None)
 
+- case: issue_41_stream_multi_callable_type_unary
+  main: |
+    import grpc
+    import typing
+    def unary_stream() -> grpc.UnaryStreamMultiCallable[int, int]:
+      return typing.cast(grpc.UnaryStreamMultiCallable[int, int], None)
+
+    stream = unary_stream()
+    stream.initial_metadata()
+    if stream.done() and stream.exception() is not None:
+      ex = stream.exception()
+      reveal_type(ex)  # N: Revealed type is "Union[builtins.Exception, None]"
+
+- case: issue_41_stream_multi_callable_type_stream
+  main: |
+    import grpc
+    import typing
+    def stream_stream() -> grpc.StreamStreamMultiCallable[int, int]:
+      return typing.cast(grpc.StreamStreamMultiCallable[int, int], None)
+
+    stream = stream_stream()
+    stream.initial_metadata()
+    if stream.done() and stream.exception() is not None:
+      ex = stream.exception()
+      reveal_type(ex)  # N: Revealed type is "Union[builtins.Exception, None]"
+
