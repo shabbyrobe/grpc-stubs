@@ -380,7 +380,7 @@ class UnaryUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request: TRequest,
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[MetadataType] = None,
         credentials: typing.Optional[CallCredentials] = None,
         # FIXME: optional bool seems weird, but that's what the docs suggest
