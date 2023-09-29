@@ -626,7 +626,7 @@ class UnaryUnaryMultiCallable(typing.Generic[TRequest, TResponse]):
     def __call__(
         self,
         request: TRequest,
-        timeout: typing.Optional[int] = None,
+        timeout: typing.Optional[float] = None,
         metadata: typing.Optional[Metadata] = None,
         credentials: typing.Optional[CallCredentials] = None,
 
