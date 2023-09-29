@@ -214,3 +214,15 @@
     server = typing.cast(aio.Server, None)
     enable_server_reflection(["foo"], server, None)
 
+- case: server_interceptor
+  main: |
+    import typing
+    import grpc
+    
+    class NoopInterceptor(grpc.ServerInterceptor):
+        def intercept_service(
+            self,
+            continuation: typing.Callable[[grpc.HandlerCallDetails], typing.Optional[grpc.RpcMethodHandler]],
+            handler_call_details: grpc.HandlerCallDetails,
+        ) -> typing.Optional[grpc.RpcMethodHandler]:
+            return continuation(handler_call_details)
