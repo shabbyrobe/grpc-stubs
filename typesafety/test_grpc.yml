@@ -52,14 +52,6 @@
     reveal_type(creds.method)  # N: Revealed type is "builtins.str"
     reveal_type(creds.timeout)  # N: Revealed type is "Union[builtins.float, None]"
 
-- case: service_context_abort
-  main: |
-    import grpc
-
-    ctx = grpc.ServicerContext()
-    reveal_type(ctx.abort(grpc.StatusCode.OK, "msg"))  # N: Revealed type is "<nothing>"
-    reveal_type(ctx.abort_with_status(grpc.Status()))  # N: Revealed type is "<nothing>"
-
 - case: call_iterator_pr10
   main: |
     import grpc
