@@ -20,7 +20,7 @@ class ReflectionServicer(BaseReflectionServicer):
         ...
 
 def enable_server_reflection(
-    service_names: typing.List[str],
+    service_names: typing.Iterable[str],
     server: AnyServer,
     pool: typing.Optional[descriptor_pool.DescriptorPool] = ...,
 ) -> None:
