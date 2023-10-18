@@ -4,6 +4,8 @@ import typing
 from concurrent import futures
 from types import ModuleType, TracebackType
 
+from grpc import aio
+
 __version__: str
 
 # This class encodes an uninhabited type, requiring use of explicit casts or ignores
