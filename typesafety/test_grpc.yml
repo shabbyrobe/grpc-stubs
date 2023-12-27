@@ -226,3 +226,9 @@
             handler_call_details: grpc.HandlerCallDetails,
         ) -> typing.Optional[grpc.RpcMethodHandler]:
             return continuation(handler_call_details)
+
+- case: grpc_aio_package
+  main: |
+    import grpc.aio
+    reveal_type(grpc.aio.Channel())  # N: Revealed type is "grpc.aio.Channel"
+    reveal_type(grpc.aio.Server())   # N: Revealed type is "grpc.aio.Server"
