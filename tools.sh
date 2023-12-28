@@ -5,6 +5,8 @@ script_abspath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Don't forget to update the version in setup.py, commit, tag and
 # push tags.
 cmd-deploy() {
+  # Clean out dist to avoid "file already exists" errors:
+  rm ./dist/*
   source venv/bin/activate
   python3 setup.py sdist bdist_wheel
   python3 -m twine upload dist/*
