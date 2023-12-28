@@ -15,6 +15,20 @@ Tests (courtesy of [pytest-mypy-plugins](https://github.com/typeddjango/pytest-m
     ./tools.sh test
 
 
+## Call for assistance
+
+There are several areas where `grpc-stubs` could use some TLC. If you'd like to
+help with any of this, please reach out.
+
+
+### Maintainers
+
+It's unlikely I'll be returning to grpc full-time for the foreseeable future,
+and my knowledge of the minutiae fades with each passing year. If anyone wishes
+to assume maintainership of this project ongoing, please reach out. An attempt to
+merge into typeshed is underway here: https://github.com/python/typeshed/pull/11204
+
+
 ## Python Support
 
 grpc-stubs is tested with 3.7 or later, but ideally it should support Python 3.6 as
@@ -58,19 +72,6 @@ will not be accepted without extensive tests, and will not be accepted with
 edit warnings left in. It's ok to use this tool to seed stubs, but not to
 refresh stubs - once contributed to this repo, the stubs should be presumed to
 have been written by hand.
-
-
-## Calls for assistance
-
-There are several areas where `grpc-stubs` could use some TLC. If you'd like to
-help with any of this, please reach out!
-
-
-### Maintainers
-
-It's unlikely I'll be returning to grpc full-time for the foreseeable future,
-and my knowledge of the minutiae fades with each passing year. If anyone wishes
-to assume maintainership of this project ongoing, please reach out.
 
 
 ## Other Very Useful Typed Python Stuff
