@@ -6,7 +6,7 @@ script_abspath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # push tags.
 cmd-deploy() {
   # Clean out dist to avoid "file already exists" errors:
-  rm ./dist/*
+  rm -f ./dist/*
   source venv/bin/activate
   python3 setup.py sdist bdist_wheel
   python3 -m twine upload dist/*
