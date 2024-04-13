@@ -510,7 +510,9 @@ class UnaryUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
 
 
 class CallIterator(typing.Generic[TResponse], Call):
+    """Both a Call for the RPC and an iterator of response values."""
     def __iter__(self) -> typing.Iterator[TResponse]: ...
+    def __next__(self) -> TResponse: ...
 
 
 class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):

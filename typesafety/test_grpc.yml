@@ -239,3 +239,12 @@
     import grpc.aio
     reveal_type(grpc.aio.Channel())  # N: Revealed type is "grpc.aio.Channel"
     reveal_type(grpc.aio.Server())   # N: Revealed type is "grpc.aio.Server"
+
+- case: call-iterator_is_an_iterator
+  main: |
+    import grpc
+    class TestRequest: ...
+    class TestResponse: ...
+    callable: grpc.UnaryStreamMultiCallable[TestRequest, TestResponse]
+    call_iterator = reveal_type(callable(TestRequest())) # N: Revealed type is "grpc.CallIterator[main.TestResponse]"
+    reveal_type(next(call_iterator)) # N: Revealed type is "main.TestResponse"
