@@ -312,6 +312,71 @@
     server = typing.cast(aio.Server, None)
     enable_server_reflection(["foo"], server, None)
 
+- case: client_interceptors
+  main: |
+    import typing
+    import grpc
+
+    MyRequestT = typing.TypeVar("MyRequestT")
+    MyResponseT = typing.TypeVar("MyResponseT")
+
+    class MyUnaryUnaryInterceptor(grpc.UnaryUnaryClientInterceptor):
+      def intercept_unary_unary(
+        self,
+        continuation: typing.Callable[
+          [grpc.ClientCallDetails, MyRequestT],
+          grpc.CallFuture[MyResponseT],
+        ],
+        client_call_details: grpc.ClientCallDetails,
+        request: MyRequestT,
+      ) -> grpc.CallFuture[MyResponseT]:
+        return continuation(client_call_details, request)
+
+    class MyUnaryStreamInterceptor(grpc.UnaryStreamClientInterceptor):
+      def intercept_unary_stream(
+        self,
+        continuation: typing.Callable[
+          [grpc.ClientCallDetails, MyRequestT],
+          grpc.CallIterator[MyResponseT],
+        ],
+        client_call_details: grpc.ClientCallDetails,
+        request: MyRequestT,
+      ) -> grpc.CallIterator[MyResponseT]:
+        return continuation(client_call_details, request)
+
+    class MyStreamUnaryInterceptor(grpc.StreamUnaryClientInterceptor):
+      def intercept_stream_unary(
+        self,
+        continuation: typing.Callable[
+          [grpc.ClientCallDetails, typing.Iterator[MyRequestT]],
+          grpc.CallFuture[MyResponseT],
+        ],
+        client_call_details: grpc.ClientCallDetails,
+        request_iterator: typing.Iterator[MyRequestT],
+      ) -> grpc.CallFuture[MyResponseT]:
+        return continuation(client_call_details, request_iterator)
+
+    class MyStreamStreamInterceptor(grpc.StreamStreamClientInterceptor):
+      def intercept_stream_stream(
+        self,
+        continuation: typing.Callable[
+          [grpc.ClientCallDetails, typing.Iterator[MyRequestT]],
+          grpc.CallIterator[MyResponseT],
+        ],
+        client_call_details: grpc.ClientCallDetails,
+        request_iterator: typing.Iterator[MyRequestT],
+      ) -> grpc.CallIterator[MyResponseT]:
+        return continuation(client_call_details, request_iterator)
+
+    channel = grpc.insecure_channel("target")
+    channel = grpc.intercept_channel(
+      channel,
+      MyUnaryUnaryInterceptor(),
+      MyUnaryStreamInterceptor(),
+      MyStreamUnaryInterceptor(),
+      MyStreamStreamInterceptor(),
+    )
+
 - case: server_interceptor
   main: |
     import typing

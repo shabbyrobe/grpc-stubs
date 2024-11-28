@@ -466,40 +466,21 @@ class CallFuture(Call, Future[TResponse], typing.Generic[TResponse]):
     pass
 
 
-class UnaryUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
-    def intercept_unary_unary(
-        self,
-
-        # FIXME: decode these cryptic runes to confirm the typing mystery of
-        # this callable's signature that was left for us by past civilisations:
-        #
-        #     continuation – A function that proceeds with the invocation by
-        #     executing the next interceptor in chain or invoking the actual RPC
-        #     on the underlying Channel. It is the interceptor’s responsibility
-        #     to call it if it decides to move the RPC forward. The interceptor
-        #     can use response_future = continuation(client_call_details,
-        #     request) to continue with the RPC. continuation returns an object
-        #     that is both a Call for the RPC and a Future. In the event of RPC
-        #     completion, the return Call-Future’s result value will be the
-        #     response message of the RPC. Should the event terminate with non-OK
-        #     status, the returned Call-Future’s exception value will be an
-        #     RpcError.
-        #
-        continuation: typing.Callable[[ClientCallDetails, TRequest], CallFuture[TResponse]],
-
-        client_call_details: ClientCallDetails,
-
-        request: TRequest,
-
-    ) -> CallFuture[TResponse]:
-        ...
-
-
 class CallIterator(typing.Generic[TResponse], Call):
     def __iter__(self) -> typing.Iterator[TResponse]: ...
 
 
-class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
+class UnaryUnaryClientInterceptor:
+    def intercept_unary_unary(
+        self,
+        continuation: typing.Callable[[ClientCallDetails, TRequest], CallFuture[TResponse]],
+        client_call_details: ClientCallDetails,
+        request: TRequest,
+    ) -> CallFuture[TResponse]:
+        ...
+
+
+class UnaryStreamClientInterceptor:
     def intercept_unary_stream(
         self,
         continuation: typing.Callable[[ClientCallDetails, TRequest], CallIterator[TResponse]],
@@ -509,7 +490,7 @@ class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
         ...
 
 
-class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
+class StreamUnaryClientInterceptor:
     def intercept_stream_unary(
         self,
         continuation: typing.Callable[[ClientCallDetails, typing.Iterator[TRequest]], CallFuture[TResponse]],
@@ -519,7 +500,7 @@ class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
         ...
 
 
-class StreamStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
+class StreamStreamClientInterceptor:
     def intercept_stream_stream(
         self,
         continuation: typing.Callable[[ClientCallDetails, typing.Iterator[TRequest]], CallIterator[TResponse]],
