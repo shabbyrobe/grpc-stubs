@@ -6,16 +6,9 @@ from types import ModuleType, TracebackType
 
 from grpc import aio
 
-__version__: str
+_T = typing.TypeVar("_T")
 
-# This class encodes an uninhabited type, requiring use of explicit casts or ignores
-# in order to satisfy type checkers. This allows grpc-stubs to add proper stubs
-# later, allowing those overrides to be removed.
-# The alternative is typing.Any, but a future replacement of Any with a proper type
-# would result in type errors where previously the type checker was happy, which
-# we want to avoid. Forcing the user to use overrides provides forwards-compatibility.
-class _PartialStubMustCastOrIgnore:
-    pass
+__version__: str
 
 
 # XXX: Early attempts to tame this used literals for all the keys (gRPC is
@@ -193,37 +186,32 @@ def xds_server_credentials(
 #
 Behaviour = typing.Callable
 
-# XXX: These are probably the SerializeToTring/FromString pb2 methods, but
-# this needs further investigation
-RequestDeserializer = typing.Callable
-ResponseSerializer = typing.Callable
-
 
 def unary_unary_rpc_method_handler(
     behavior: Behaviour,
-    request_deserializer: typing.Optional[RequestDeserializer] = None,
-    response_serializer: typing.Optional[ResponseSerializer] = None,
+    request_deserializer: typing.Optional[_Deserializer[TRequest]] = None,
+    response_serializer: typing.Optional[_Serializer[TResponse]] = None,
 ) -> RpcMethodHandler:
     ...
 
 def unary_stream_rpc_method_handler(
     behavior: Behaviour,
-    request_deserializer: typing.Optional[RequestDeserializer] = None,
-    response_serializer: typing.Optional[ResponseSerializer] = None,
+    request_deserializer: typing.Optional[_Deserializer[TRequest]] = None,
+    response_serializer: typing.Optional[_Serializer[TResponse]] = None,
 ) -> RpcMethodHandler:
     ...
 
 def stream_unary_rpc_method_handler(
     behavior: Behaviour,
-    request_deserializer: typing.Optional[RequestDeserializer] = None,
-    response_serializer: typing.Optional[ResponseSerializer] = None,
+    request_deserializer: typing.Optional[_Deserializer[TRequest]] = None,
+    response_serializer: typing.Optional[_Serializer[TResponse]] = None,
 ) -> RpcMethodHandler:
     ...
 
 def stream_stream_rpc_method_handler(
     behavior: Behaviour,
-    request_deserializer: typing.Optional[RequestDeserializer] = None,
-    response_serializer: typing.Optional[ResponseSerializer] = None,
+    request_deserializer: typing.Optional[_Deserializer[TRequest]] = None,
+    response_serializer: typing.Optional[_Serializer[TResponse]] = None,
 ) -> RpcMethodHandler:
     ...
 
@@ -285,10 +273,8 @@ class StatusCode(enum.Enum):
 
 """Channel Object"""
 
-# XXX: These are probably the SerializeToTring/FromString pb2 methods, but
-# this needs further investigation
-RequestSerializer = typing.Callable
-ResponseDeserializer = typing.Callable
+_Serializer = typing.Callable[[_T], bytes]
+_Deserializer = typing.Callable[[bytes], _T]
 
 
 class Channel:
@@ -297,16 +283,16 @@ class Channel:
     def stream_stream(
         self,
         method: str,
-        request_serializer: typing.Optional[RequestSerializer],
-        response_deserializer: typing.Optional[ResponseDeserializer],
+        request_serializer: typing.Optional[_Serializer[TRequest]],
+        response_deserializer: typing.Optional[_Deserializer[TResponse]],
     ) -> StreamStreamMultiCallable:
         ...
 
     def stream_unary(
         self,
         method: str,
-        request_serializer: typing.Optional[RequestSerializer],
-        response_deserializer: typing.Optional[ResponseDeserializer],
+        request_serializer: typing.Optional[_Serializer[TRequest]],
+        response_deserializer: typing.Optional[_Deserializer[TResponse]],
     ) -> StreamUnaryMultiCallable:
         ...
 
@@ -320,16 +306,16 @@ class Channel:
     def unary_stream(
         self,
         method: str,
-        request_serializer: typing.Optional[RequestSerializer],
-        response_deserializer: typing.Optional[ResponseDeserializer],
+        request_serializer: typing.Optional[_Serializer[TRequest]],
+        response_deserializer: typing.Optional[_Deserializer[TResponse]],
     ) -> UnaryStreamMultiCallable:
         ...
 
     def unary_unary(
         self,
         method: str,
-        request_serializer: typing.Optional[RequestSerializer],
-        response_deserializer: typing.Optional[ResponseDeserializer],
+        request_serializer: typing.Optional[_Serializer[TRequest]],
+        response_deserializer: typing.Optional[_Deserializer[TResponse]],
     ) -> UnaryUnaryMultiCallable:
         ...
 
@@ -526,7 +512,7 @@ class UnaryStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
 class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
     def intercept_stream_unary(
         self,
-        continuation: typing.Callable[[ClientCallDetails, TRequest], CallFuture[TResponse]],
+        continuation: typing.Callable[[ClientCallDetails, typing.Iterator[TRequest]], CallFuture[TResponse]],
         client_call_details: ClientCallDetails,
         request_iterator: typing.Iterator[TRequest],
     ) -> CallFuture[TResponse]:
@@ -536,7 +522,7 @@ class StreamUnaryClientInterceptor(typing.Generic[TRequest, TResponse]):
 class StreamStreamClientInterceptor(typing.Generic[TRequest, TResponse]):
     def intercept_stream_stream(
         self,
-        continuation: typing.Callable[[ClientCallDetails, TRequest], CallIterator[TResponse]],
+        continuation: typing.Callable[[ClientCallDetails, typing.Iterator[TRequest]], CallIterator[TResponse]],
         client_call_details: ClientCallDetails,
         request_iterator: typing.Iterator[TRequest],
     ) -> CallIterator[TResponse]:
@@ -581,10 +567,10 @@ class RpcMethodHandler(typing.Generic[TRequest, TResponse]):
     response_streaming: bool
 
     # XXX: not clear from docs whether this is optional or not
-    request_deserializer: typing.Optional[RequestDeserializer]
+    request_deserializer: typing.Optional[_Deserializer[TRequest]]
 
     # XXX: not clear from docs whether this is optional or not
-    response_serializer: typing.Optional[ResponseSerializer]
+    response_serializer: typing.Optional[_Serializer[TResponse]]
 
     unary_unary: typing.Optional[typing.Callable[[TRequest, ServicerContext], TResponse]]
 
@@ -790,4 +776,3 @@ def services(protobuf_path: str) -> ModuleType:
 
 def protos_and_services(protobuf_path: str) -> typing.Tuple[ModuleType, ModuleType]:
     ...
-
