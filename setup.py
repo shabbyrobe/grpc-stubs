@@ -4,7 +4,7 @@ from typing import List
 from setuptools import find_packages
 from distutils.core import setup
 
-__version__ = "1.53.0.5"
+__version__ = "1.53.0.6"
 
 dependencies = [
     'grpcio',
