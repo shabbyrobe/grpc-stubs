@@ -2,6 +2,9 @@ gRPC Typing Stubs for Python
 ============================
 
 > [!WARNING]
+>
+> **2025-04-28: The end of the line for `grpc-stubs`**.
+>
 > My involvement with grpc ceased around 2019, and my knowledge of the minutiae faded
 > with each passing year. As a consequence, this this project has been archived, but
 > development will continue at
